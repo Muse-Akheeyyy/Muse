@@ -1,3 +1,18 @@
+---v1.0.0
+# First Muse release
+Muse is an independent GPL-3.0 fork of Metrolist, rebuilt under its own application id, package and update channel.
+
+## Highlights
+- New Muse identity: launcher icon, About screen, desktop logo and app name
+- Android, desktop and iOS sources moved to `io.github.museakheeyyy.muse`
+- Share and deep links use `muse-akheeyyy.pages.dev` and the `muse://` scheme
+- Website rewritten for Muse, with a privacy policy that matches this build
+
+## Notes
+- Installs alongside Metrolist; import a Metrolist backup to bring your library over
+- No telemetry and no crash reporting; Last.fm scrobbling is not available in this build
+- Upstream fixes from Metrolist are merged into future releases
+
 ---v14.0.1
 # Fixes after 14.0.0
 Metrolist 14.0.1 fixes upgrades from 13.x, playback and desktop stability, and brings back several 13.x features.
