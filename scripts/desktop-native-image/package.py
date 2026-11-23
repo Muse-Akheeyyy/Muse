@@ -156,7 +156,7 @@ def package(image, target, destination, version, graal=None):
             digest = hashlib.file_digest(stream, 'sha256').hexdigest()
         if digest != checksum.read_text().strip():
             raise ValueError('Windows login helper checksum mismatch')
-        (image / 'install-manifest.json').write_text(json.dumps({'schema':1,'appId':'com.metrolist.desktop','version':version,'platform':'windows','architecture':'x86_64','launcher':'Metrolist.exe'},indent=2)+'\n')
+        (image / 'install-manifest.json').write_text(json.dumps({'schema':1,'appId':'io.github.museakheeyyy.muse.desktop','version':version,'platform':'windows','architecture':'x86_64','launcher':'Metrolist.exe'},indent=2)+'\n')
         output = destination / (name + '.zip')
         archive(image, output)
     elif target == 'macos-arm64':
@@ -178,7 +178,7 @@ def package(image, target, destination, version, graal=None):
         with (app / 'Info.plist').open('wb') as stream:
             plistlib.dump({
                 'CFBundleExecutable': 'Metrolist',
-                'CFBundleIdentifier': 'com.metrolist.desktop',
+                'CFBundleIdentifier': 'io.github.museakheeyyy.muse.desktop',
                 'CFBundleName': 'Metrolist',
                 'CFBundleDisplayName': 'Metrolist',
                 'CFBundlePackageType': 'APPL',

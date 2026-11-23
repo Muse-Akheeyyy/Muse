@@ -290,7 +290,7 @@ private class VerifyReleaseDistributableAction(
         check(packagedEntries.none { it == "romanization/mandarin.bin" || it.startsWith("com/atilika/kuromoji/") }) {
             "Release distributable contains retired romanization assets"
         }
-        val resourcePrefix = "composeResources/com.metrolist.shared.generated.resources/files/licenses/glyphmind/"
+        val resourcePrefix = "composeResources/io.github.museakheeyyy.muse.shared.generated.resources/files/licenses/glyphmind/"
         val missingLicenses =
             glyphmindLicenses
                 .walkTopDown()

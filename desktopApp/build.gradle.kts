@@ -91,7 +91,7 @@ configurations.matching { it.name.startsWith("jvm") }.configureEach {
     exclude(group = "it.krzeminski")
 }
 
-group = "com.metrolist"
+group = "io.github.museakheeyyy.muse"
 val appVersion = providers.gradleProperty("appVersion").get()
 version = appVersion
 
@@ -597,7 +597,10 @@ val sentrySourceRevision =
         .filter { it.matches(Regex("[0-9a-fA-F]{40}")) }
         .orElse("local")
         .get()
-val sentryBundleId = UUID.nameUUIDFromBytes("com.metrolist.desktop:$platform:$appVersion:$sentrySourceRevision".encodeToByteArray())
+val sentryBundleId =
+    UUID.nameUUIDFromBytes(
+        "io.github.museakheeyyy.muse.desktop:$platform:$appVersion:$sentrySourceRevision".encodeToByteArray(),
+    )
 val generateSentryDebugMetaProperties =
     tasks.register<WriteProperties>("generateSentryDebugMetaProperties") {
         destinationFile.set(sentryDebugMetaProperties)
@@ -616,7 +619,7 @@ tasks.named<ProcessResources>("jvmProcessResources") {
 }
 
 compose.resources {
-    packageOfResClass = "com.metrolist.desktop.generated.resources"
+    packageOfResClass = "io.github.museakheeyyy.muse.desktop.generated.resources"
 }
 
 // Compose strips command-line tools from its runtime; temporarily restore java to generate the base CDS archive.
@@ -702,7 +705,7 @@ compose.desktop {
             }
         }
 
-        mainClass = "com.metrolist.desktop.MainKt"
+        mainClass = "io.github.museakheeyyy.muse.desktop.MainKt"
         javaHome =
             providers.gradleProperty("metrolist.desktop.javaHome").orNull?.let { home ->
                 val release = Properties().apply { file("$home/release").inputStream().use(::load) }

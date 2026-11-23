@@ -20,7 +20,7 @@ import urllib.request
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parent.parent
-ICON_DIR = ROOT / "shared/src/commonMain/kotlin/com/metrolist/shared/ui/icons"
+ICON_DIR = ROOT / "shared/src/commonMain/kotlin/io/github/museakheeyyy/muse/shared/ui/icons"
 UPSTREAM_REVISION = "10ecc14790612ca8fd164e3f4ffe9c16fc50d5b7"
 ICON_FILES = (
     "MetrolistIconsOutlined.kt",

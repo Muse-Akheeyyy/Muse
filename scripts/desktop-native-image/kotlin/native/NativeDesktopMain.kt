@@ -1,8 +1,8 @@
-package com.metrolist.desktop.nativeimage
+package io.github.museakheeyyy.muse.desktop.nativeimage
 
-import com.metrolist.desktop.utils.configureDesktopJvmErrorFile
+import io.github.museakheeyyy.muse.desktop.utils.configureDesktopJvmErrorFile
 import java.nio.file.Path
-import com.metrolist.desktop.main as desktopMain
+import io.github.museakheeyyy.muse.desktop.main as desktopMain
 
 fun main(args: Array<String>) {
     if (System.getProperty("org.graalvm.nativeimage.imagecode") == "runtime") {

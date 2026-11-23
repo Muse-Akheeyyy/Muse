@@ -22,7 +22,7 @@ import process_tree
 
 
 ROOT = Path(__file__).resolve().parents[2]
-MAIN = "com.metrolist.desktop.experiment.NativeImageMainKt"
+MAIN = "io.github.museakheeyyy.muse.desktop.experiment.NativeImageMainKt"
 
 
 def disable_core_dump():

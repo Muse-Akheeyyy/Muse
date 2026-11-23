@@ -58,8 +58,8 @@ struct MetrolistApp: App {
 }
 
 private final class AutomaticBackupAppDelegate: NSObject, UIApplicationDelegate {
-    private static let taskIdentifier = "com.metrolist.automatic-backup"
-    private let settingsChanged = Notification.Name("com.metrolist.automaticBackupSettingsChanged")
+    private static let taskIdentifier = "io.github.museakheeyyy.muse.automatic-backup"
+    private let settingsChanged = Notification.Name("io.github.museakheeyyy.muse.automaticBackupSettingsChanged")
 
     func application(
         _ application: UIApplication,
@@ -133,7 +133,7 @@ private struct AppHostView: View {
             .onReceive(NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification).receive(on: RunLoop.main)) { _ in
                 syncSentryConsent()
             }
-            .onReceive(NotificationCenter.default.publisher(for: Notification.Name("com.metrolist.statusBarVisibilityChanged"))) { notification in
+            .onReceive(NotificationCenter.default.publisher(for: Notification.Name("io.github.museakheeyyy.muse.statusBarVisibilityChanged"))) { notification in
                 statusBarHidden = (notification.object as? NSNumber)?.boolValue ?? false
             }
             .onOpenURL { url in

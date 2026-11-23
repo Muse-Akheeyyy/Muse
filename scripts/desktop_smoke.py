@@ -319,7 +319,7 @@ def smoke(package, output, system=sys.platform, native=False, trace_java=None, t
             command_context = nullcontext([str(trace_java), f"-agentlib:native-image-agent=config-merge-dir={trace_agent}",
                 "--enable-native-access=ALL-UNNAMED", "--add-opens=java.desktop/sun.awt=ALL-UNNAMED",
                 f"-Dcompose.application.resources.dir={resources}", "-Xms32m", "-Xmx384m",
-                "-cp", trace_classpath.read_text().strip(), "com.metrolist.desktop.MainKt"])
+                "-cp", trace_classpath.read_text().strip(), "io.github.museakheeyyy.muse.desktop.MainKt"])
         with (output / "stdout.log").open("wb") as stdout:
             try:
                 with (command_context if trace_java else packaged_command(package, work, system, stdout)) as command:

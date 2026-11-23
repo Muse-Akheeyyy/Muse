@@ -10,7 +10,7 @@ import datetime
 import json
 from pathlib import Path
 
-BUNDLE_ID = "com.metrolist.MetrolistApp"
+BUNDLE_ID = "io.github.museakheeyyy.muse"
 MIN_OS_VERSION = "15.0"
 
 
@@ -18,7 +18,7 @@ def source(repository: str, version: str, ipa: Path, date: str) -> dict:
     raw = f"https://raw.githubusercontent.com/{repository}/v{version}"
     return {
         "name": "Metrolist",
-        "identifier": "com.metrolist.source",
+        "identifier": "io.github.museakheeyyy.muse.source",
         "website": f"https://github.com/{repository}",
         "apps": [
             {

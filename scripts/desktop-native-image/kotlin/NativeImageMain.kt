@@ -1,11 +1,11 @@
-package com.metrolist.desktop.experiment
+package io.github.museakheeyyy.muse.desktop.experiment
 
-import com.metrolist.desktop.state.playback.PlayerState
-import com.metrolist.desktop.utils.DesktopUrlHandler
-import com.metrolist.shared.model.SongItem
+import io.github.museakheeyyy.muse.desktop.state.playback.PlayerState
+import io.github.museakheeyyy.muse.desktop.utils.DesktopUrlHandler
+import io.github.museakheeyyy.muse.shared.model.SongItem
 import java.io.File
 import kotlin.concurrent.thread
-import com.metrolist.desktop.main as desktopMain
+import io.github.museakheeyyy.muse.desktop.main as desktopMain
 
 fun main(args: Array<String>) {
     val media = System.getProperty("metrolist.experiment.media")

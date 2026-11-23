@@ -36,7 +36,7 @@ def run_session(classpath, java, root):
 
     def probe(mode, *values, env=None):
         run(java, "-Djava.util.prefs.userRoot=" + str(root / "prefs"), "-cp", classpath,
-            "com.metrolist.shared.settings.LinuxSecretServiceProbe", mode, *values, env=env)
+            "io.github.museakheeyyy.muse.shared.settings.LinuxSecretServiceProbe", mode, *values, env=env)
 
     def unlock():
         run("gnome-keyring-daemon", "--unlock", "--components=secrets", "--control-directory",
@@ -128,19 +128,19 @@ def run_session(classpath, java, root):
         "org.freedesktop.secrets", "/org/freedesktop/secrets", "org.freedesktop.Secret.Service", "SetAlias",
         GLib.Variant("(so)", ("default", collection)), None, Gio.DBusCallFlags.NONE, 5000, None,
     )
-    run("secret-tool", "store", "--label=Metrolist Desktop Secrets", "service", "com.metrolist.desktop",
+    run("secret-tool", "store", "--label=Metrolist Desktop Secrets", "service", "io.github.museakheeyyy.muse.desktop",
         "schema", "metrolist-settings", "account", "desktop-secrets", input="#Metrolist desktop secrets")
     probe("duplicate-keyrings")
     probe("recovered", "innerTubeCookie=SAPISID=last-login", "lyricsDeepLApiKey=fake-duplicate-keyrings",
           "lastFmSession=lastfm-while-service-absent", "discordAccessToken=fake-discord")
-    run("secret-tool", "store", "--label=Metrolist Desktop Secrets", "service", "com.metrolist.desktop",
+    run("secret-tool", "store", "--label=Metrolist Desktop Secrets", "service", "io.github.museakheeyyy.muse.desktop",
         "schema", "metrolist-settings", "account", "desktop-secrets", input="innerTubeCookie=SAPISID=stale-duplicate")
     probe("clear-duplicates")
     probe("cleared")
 
-    run("secret-tool", "clear", "service", "com.metrolist.desktop", "schema", "metrolist-settings",
+    run("secret-tool", "clear", "service", "io.github.museakheeyyy.muse.desktop", "schema", "metrolist-settings",
         "account", "desktop-secrets")
-    run("secret-tool", "store", "--label=Metrolist Desktop Secrets", "service", "com.metrolist.desktop",
+    run("secret-tool", "store", "--label=Metrolist Desktop Secrets", "service", "io.github.museakheeyyy.muse.desktop",
         "schema", "metrolist-settings", "account", "desktop-secrets", input="#Metrolist desktop secrets")
     lock()
     probe("default-keyring")
@@ -170,7 +170,7 @@ def run_session(classpath, java, root):
         set_secret(path, secret)
 
     unlock()
-    attributes = {"service": "com.metrolist.desktop", "schema": "metrolist-settings", "account": "desktop-secrets"}
+    attributes = {"service": "io.github.museakheeyyy.muse.desktop", "schema": "metrolist-settings", "account": "desktop-secrets"}
     stale = b"innerTubeCookie=SAPISID=locked-duplicate\nlastFmSession=locked-lastfm"
     login_item, prompt = call(
         "/org/freedesktop/secrets/collection/login", "org.freedesktop.Secret.Collection", "CreateItem",

@@ -248,7 +248,7 @@ sentry {
 }
 
 android {
-    namespace = "com.metrolist.android"
+    namespace = "io.github.museakheeyyy.muse.android"
     compileSdk {
         version = release(37) { minorApiLevel = 1 }
     }
@@ -420,7 +420,7 @@ androidComponents {
 }
 
 val composeStringsResource =
-    "assets/composeResources/com.metrolist.shared.generated.resources/values/strings.commonMain.cvr"
+    "assets/composeResources/io.github.museakheeyyy.muse.shared.generated.resources/values/strings.commonMain.cvr"
 
 listOf("debug", "release", "benchmark", "izzy").forEach { variant ->
     val verification =

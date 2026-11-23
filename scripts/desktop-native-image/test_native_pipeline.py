@@ -421,7 +421,7 @@ class PipelineTest(unittest.TestCase):
             self.assertIn('-H:NativeLinkerOption=-mmacosx-version-min=11.0', command)
             self.assertIn(f'-H:NativeLinkerOption={work / "macos-awt.o"}', command)
             self.assertIn('-J--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jdk=ALL-UNNAMED', command)
-            self.assertIn('--features=com.metrolist.desktop.nativeimage.MacosAwtFeature', command)
+            self.assertIn('--features=io.github.museakheeyyy.muse.desktop.nativeimage.MacosAwtFeature', command)
             with patch.dict(os.environ, MACOSX_DEPLOYMENT_TARGET='13.2'), patch('subprocess.check_output') as otool:
                 command = native_image.arguments(work/'graal', work, work/'Metrolist', 'macos-arm64')
                 self.assertIn('-H:NativeLinkerOption=-mmacosx-version-min=13.2', command)

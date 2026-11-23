@@ -57,7 +57,7 @@ check_deps() {
 
 find_desktop_pids() {
     local status=0
-    pgrep -f "com.metrolist.desktop.MainKt" || status=$?
+    pgrep -f "io.github.museakheeyyy.muse.desktop.MainKt" || status=$?
     # pgrep uses 1 for an empty process list; other failures must stop the launch.
     if [[ "$status" -gt 1 ]]; then
         return "$status"

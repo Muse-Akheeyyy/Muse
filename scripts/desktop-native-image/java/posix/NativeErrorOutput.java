@@ -1,4 +1,4 @@
-package com.metrolist.desktop.nativeimage;
+package io.github.museakheeyyy.muse.desktop.nativeimage;
 
 import java.util.List;
 import org.graalvm.nativeimage.c.CContext;

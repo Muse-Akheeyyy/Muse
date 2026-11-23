@@ -1,6 +1,6 @@
-package com.metrolist.desktop.nativeimage;
+package io.github.museakheeyyy.muse.desktop.nativeimage;
 
-import com.metrolist.shared.utils.XdgUtils;
+import io.github.museakheeyyy.muse.shared.utils.XdgUtils;
 import com.oracle.svm.core.annotate.Substitute;
 import com.oracle.svm.core.annotate.TargetClass;
 import java.io.File;
@@ -25,7 +25,7 @@ final class NativeCrashLog {
 }
 
 // Native Image has no HotSpot ErrorFile option and does not consume _JAVA_OPTIONS.
-@TargetClass(className = "com.metrolist.desktop.utils.DesktopJvmErrorFileKt")
+@TargetClass(className = "io.github.museakheeyyy.muse.desktop.utils.DesktopJvmErrorFileKt")
 final class TargetDesktopJvmErrorFile {
     @Substitute
     public static void configureDesktopJvmErrorFile() {

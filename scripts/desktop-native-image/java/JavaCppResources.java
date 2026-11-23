@@ -1,4 +1,4 @@
-package com.metrolist.desktop.nativeimage;
+package io.github.museakheeyyy.muse.desktop.nativeimage;
 
 import com.oracle.svm.core.annotate.Alias;
 import com.oracle.svm.core.annotate.Substitute;

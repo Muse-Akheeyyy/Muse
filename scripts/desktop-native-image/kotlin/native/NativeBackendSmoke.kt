@@ -1,10 +1,10 @@
-package com.metrolist.desktop.nativeimage
+package io.github.museakheeyyy.muse.desktop.nativeimage
 
-import com.metrolist.desktop.utils.configureDesktopSentry
-import com.metrolist.desktop.utils.isDesktopPlatformSupported
-import com.metrolist.desktop.window.jna.User32Extend
-import com.metrolist.desktop.window.jna.structure.MENUITEMINFO
-import com.metrolist.desktop.window.jna.structure.windowsBuildNumber
+import io.github.museakheeyyy.muse.desktop.utils.configureDesktopSentry
+import io.github.museakheeyyy.muse.desktop.utils.isDesktopPlatformSupported
+import io.github.museakheeyyy.muse.desktop.window.jna.User32Extend
+import io.github.museakheeyyy.muse.desktop.window.jna.structure.MENUITEMINFO
+import io.github.museakheeyyy.muse.desktop.window.jna.structure.windowsBuildNumber
 import com.sun.jna.Pointer
 import com.sun.jna.platform.win32.Advapi32Util
 import com.sun.jna.platform.win32.COM.COMUtils

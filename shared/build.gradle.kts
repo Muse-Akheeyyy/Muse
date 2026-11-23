@@ -183,11 +183,11 @@ abstract class GenerateRoomMigrationTestSchemas : DefaultTask() {
 
     @TaskAction
     fun generate() {
-        val output = outputDirectory.file("com/metrolist/shared/db/HistoricalRoomSchemas.kt").get().asFile
+        val output = outputDirectory.file("io/github/museakheeyyy/muse/shared/db/HistoricalRoomSchemas.kt").get().asFile
         output.parentFile.mkdirs()
         output.writeText(
             buildString {
-                appendLine("package com.metrolist.shared.db")
+                appendLine("package io.github.museakheeyyy.muse.shared.db")
                 appendLine("import kotlin.io.encoding.Base64")
                 appendLine("internal fun historicalRoomSchema(version: Int): String = when (version) {")
                 schemaDirectory
@@ -210,7 +210,7 @@ abstract class GenerateRoomMigrationTestSchemas : DefaultTask() {
 
 val generateRoomMigrationTestSchemas =
     tasks.register<GenerateRoomMigrationTestSchemas>("generateRoomMigrationTestSchemas") {
-        schemaDirectory.set(layout.projectDirectory.dir("schemas/com.metrolist.shared.db.MusicDatabase"))
+        schemaDirectory.set(layout.projectDirectory.dir("schemas/io.github.museakheeyyy.muse.shared.db.MusicDatabase"))
         outputDirectory.set(layout.buildDirectory.dir("generated/source/roomMigrationTest/kotlin"))
     }
 
@@ -224,11 +224,11 @@ abstract class GenerateOpusTestFixture : DefaultTask() {
 
     @TaskAction
     fun generate() {
-        val destination = outputDirectory.file("com/metrolist/shared/playback/opus/OpusTestFixture.kt").get().asFile
+        val destination = outputDirectory.file("io/github/museakheeyyy/muse/shared/playback/opus/OpusTestFixture.kt").get().asFile
         destination.parentFile.mkdirs()
         val encoded = Base64.getEncoder().encodeToString(fixture.get().asFile.readBytes())
         destination.writeText(
-            "package com.metrolist.shared.playback.opus\n" +
+            "package io.github.museakheeyyy.muse.shared.playback.opus\n" +
                 "import kotlin.io.encoding.Base64\n" +
                 "internal fun opusWebmFixture(): ByteArray = Base64.decode(\"$encoded\")\n",
         )
@@ -278,7 +278,7 @@ val bundledLanguageTags =
 
 kotlin {
     android {
-        namespace = "com.metrolist.shared"
+        namespace = "io.github.museakheeyyy.muse.shared"
         compileSdk {
             version = release(37) { minorApiLevel = 1 }
         }
@@ -505,7 +505,7 @@ val prepareComposeResourceAliases =
     }
 
 compose.resources {
-    packageOfResClass = "com.metrolist.shared.generated.resources"
+    packageOfResClass = "io.github.museakheeyyy.muse.shared.generated.resources"
     publicResClass = true
     customDirectory("commonMain", layout.dir(prepareComposeResourceAliases.map { it.destinationDir }))
 }
@@ -628,11 +628,11 @@ val generateBuildConfig =
         outputs.cacheIf { false }
 
         doLast {
-            val configFile = outputDir.resolve("com/metrolist/shared/BuildConfig.kt")
+            val configFile = outputDir.resolve("io/github/museakheeyyy/muse/shared/BuildConfig.kt")
             configFile.parentFile.mkdirs()
             configFile.writeText(
                 """
-                package com.metrolist.shared
+                package io.github.museakheeyyy.muse.shared
 
                 import kotlin.experimental.ExperimentalObjCRefinement
                 import kotlin.native.HiddenFromObjC
@@ -1017,7 +1017,7 @@ tasks.register("verifyDesktopJarIntegrity") {
             val notice = licenseDirectory.resolve("NOTICE.md").readText()
             val referencedLicenses = Regex("`(licenses/[^`]+)`").findAll(notice).map { it.groupValues[1] }.toList() + "LICENSE"
             check(referencedLicenses.all { licenseDirectory.resolve(it).isFile }) { "Glyphmind NOTICE references missing license files" }
-            val resourcePrefix = "composeResources/com.metrolist.shared.generated.resources/files/licenses/glyphmind/"
+            val resourcePrefix = "composeResources/io.github.museakheeyyy.muse.shared.generated.resources/files/licenses/glyphmind/"
             val missingLicenses =
                 licenseDirectory
                     .walkTopDown()

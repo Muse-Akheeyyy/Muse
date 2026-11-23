@@ -1,4 +1,4 @@
-package = com.metrolist.shared.playback.observation
+package = io.github.museakheeyyy.muse.shared.playback.observation
 language = Objective-C
 ---
 #import <Foundation/Foundation.h>

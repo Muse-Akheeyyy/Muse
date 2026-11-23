@@ -52,7 +52,7 @@
     </array>
     <key>BGTaskSchedulerPermittedIdentifiers</key>
     <array>
-        <string>com.metrolist.automatic-backup</string>
+        <string>io.github.museakheeyyy.muse.automatic-backup</string>
     </array>
     <key>UILaunchScreen</key>
     <dict/>

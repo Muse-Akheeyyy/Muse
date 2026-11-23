@@ -16,7 +16,7 @@ from package import macos_minimum_version
 from verify_linux_audio import verify_linux_audio
 
 ROOT = Path(__file__).resolve().parents[2]
-METADATA = Path(__file__).parent / 'resources/META-INF/native-image/com.metrolist/desktop-experiment'
+METADATA = Path(__file__).parent / 'resources/META-INF/native-image/io.github.museakheeyyy.muse/desktop-experiment'
 
 
 def host_platform():
@@ -165,8 +165,8 @@ def arguments(graal, work, output, target, experiment=False, agent=None, macos_v
             options += [f'-H:NativeLinkerOption=-mmacosx-version-min={macos_version or macos_deployment_target(graal)}',
                         f'-H:NativeLinkerOption={work / "macos-awt.o"}',
                         '-J--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jdk=ALL-UNNAMED',
-                        '--features=com.metrolist.desktop.nativeimage.MacosAwtFeature']
-    main = 'com.metrolist.desktop.experiment.NativeImageMainKt' if experiment else 'com.metrolist.desktop.nativeimage.NativeDesktopMainKt'
+                        '--features=io.github.museakheeyyy.muse.desktop.nativeimage.MacosAwtFeature']
+    main = 'io.github.museakheeyyy.muse.desktop.experiment.NativeImageMainKt' if experiment else 'io.github.museakheeyyy.muse.desktop.nativeimage.NativeDesktopMainKt'
     classpath = (work / 'classpath.txt').read_text().strip()
     classpath = str(work / 'serialization-config') + os.pathsep + classpath
     if not experiment:

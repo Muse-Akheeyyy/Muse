@@ -279,7 +279,7 @@ fun registerWindowsPortableArchive(
                 val manifest =
                     mapOf(
                         "schema" to 1,
-                        "appId" to "com.metrolist.desktop",
+                        "appId" to "io.github.museakheeyyy.muse.desktop",
                         "version" to manifestVersion,
                         "platform" to "windows",
                         "architecture" to "x86_64",
