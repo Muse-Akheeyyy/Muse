@@ -39,7 +39,7 @@ import io.github.museakheeyyy.muse.shared.generated.resources.Res
 import io.github.museakheeyyy.muse.shared.generated.resources.about
 import io.github.museakheeyyy.muse.shared.generated.resources.brand_discord
 import io.github.museakheeyyy.muse.shared.generated.resources.brand_github
-import io.github.museakheeyyy.muse.shared.generated.resources.brand_telegram
+import io.github.museakheeyyy.muse.shared.generated.resources.brand_website
 import io.github.museakheeyyy.muse.shared.generated.resources.creator_avatar
 import io.github.museakheeyyy.muse.shared.generated.resources.credits_android_designer
 import io.github.museakheeyyy.muse.shared.generated.resources.credits_android_developer
@@ -91,7 +91,7 @@ fun rememberAboutScreenText(): AboutScreenText =
         androidDesignerRole = sharedStringResource(Res.string.credits_android_designer),
         wearOsDesignerRole = sharedStringResource(Res.string.credits_wearos_designer),
         discord = sharedStringResource(Res.string.brand_discord),
-        telegram = sharedStringResource(Res.string.brand_telegram),
+        website = sharedStringResource(Res.string.brand_website),
         github = sharedStringResource(Res.string.brand_github),
         license = sharedStringResource(Res.string.credits_license_name),
         licenseDescription = sharedStringResource(Res.string.credits_license_desc),
@@ -155,7 +155,7 @@ object AboutContributors {
 
 enum class AboutCommunityLinkKind {
     DISCORD,
-    TELEGRAM,
+    WEBSITE,
     REPOSITORY,
     LICENSE,
 }
@@ -167,9 +167,9 @@ data class AboutCommunityLink(
 
 val aboutCommunityLinks: List<AboutCommunityLink> =
     listOf(
-        AboutCommunityLink(AboutCommunityLinkKind.DISCORD, "https://discord.com/invite/zrdbeRG2Mt"),
-        AboutCommunityLink(AboutCommunityLinkKind.TELEGRAM, "https://t.me/metrolistapp"),
-        AboutCommunityLink(AboutCommunityLinkKind.REPOSITORY, "https://github.com/Muse-Akheeyyy/Muse"),
+        AboutCommunityLink(AboutCommunityLinkKind.DISCORD, "https://discord.gg/FW6EX7Wgz"),
+        AboutCommunityLink(AboutCommunityLinkKind.WEBSITE, "https://muse-akheeyyy.pages.dev"),
+        AboutCommunityLink(AboutCommunityLinkKind.REPOSITORY, "https://github.com/Muse-Akheeyyy/muse-site"),
     )
 
 val aboutLicenseLink: AboutCommunityLink =
@@ -193,7 +193,7 @@ data class AboutScreenText(
     val androidDesignerRole: String,
     val wearOsDesignerRole: String,
     val discord: String,
-    val telegram: String,
+    val website: String,
     val github: String,
     val license: String,
     val licenseDescription: String,
@@ -217,7 +217,7 @@ data class AboutScreenText(
     fun communityLabel(kind: AboutCommunityLinkKind): String =
         when (kind) {
             AboutCommunityLinkKind.DISCORD -> discord
-            AboutCommunityLinkKind.TELEGRAM -> telegram
+            AboutCommunityLinkKind.WEBSITE -> website
             AboutCommunityLinkKind.REPOSITORY -> github
             AboutCommunityLinkKind.LICENSE -> license
         }
@@ -235,7 +235,7 @@ internal fun CommunitySection(
                     icon =
                         when (link.kind) {
                             AboutCommunityLinkKind.DISCORD -> MetrolistIconsBrand.Discord
-                            AboutCommunityLinkKind.TELEGRAM -> MetrolistIconsBrand.Telegram
+                            AboutCommunityLinkKind.WEBSITE -> MetrolistIcons.Outlined.Language
                             AboutCommunityLinkKind.REPOSITORY -> MetrolistIconsBrand.Github
                             AboutCommunityLinkKind.LICENSE -> MetrolistIcons.Outlined.Info
                         },

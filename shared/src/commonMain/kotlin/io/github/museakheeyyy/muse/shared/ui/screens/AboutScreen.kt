@@ -84,7 +84,6 @@ import io.github.museakheeyyy.muse.shared.generated.resources.build_type_release
 import io.github.museakheeyyy.muse.shared.generated.resources.devmode_already_active
 import io.github.museakheeyyy.muse.shared.generated.resources.devtools_enabled
 import io.github.museakheeyyy.muse.shared.generated.resources.play
-import io.github.museakheeyyy.muse.shared.generated.resources.stands_with_palestine
 import io.github.museakheeyyy.muse.shared.settings.Settings
 import io.github.museakheeyyy.muse.shared.ui.components.images.AsyncImage
 import io.github.museakheeyyy.muse.shared.ui.icons.MetrolistIcons
@@ -262,13 +261,6 @@ fun AboutScreen(
                         .padding(16.dp),
             )
 
-            Text(
-                text = stringResource(Res.string.stands_with_palestine),
-                style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                color = colorScheme.onSurfaceVariant,
-            )
         }
     }
 

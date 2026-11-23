@@ -6,10 +6,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import io.github.museakheeyyy.muse.shared.generated.resources.Res
 import io.github.museakheeyyy.muse.shared.generated.resources.app_icon_arctic_haze
-import io.github.museakheeyyy.muse.shared.generated.resources.app_icon_gradient
 import io.github.museakheeyyy.muse.shared.generated.resources.app_icon_lavender_leap
 import io.github.museakheeyyy.muse.shared.generated.resources.app_icon_metromallow
-import io.github.museakheeyyy.muse.shared.generated.resources.app_icon_original
 import io.github.museakheeyyy.muse.shared.generated.resources.app_icon_pride_special
 import io.github.museakheeyyy.muse.shared.generated.resources.app_icon_static
 import io.github.museakheeyyy.muse.shared.generated.resources.app_icon_zenith_black
@@ -28,7 +26,6 @@ import platform.UIKit.supportsAlternateIcons
 private enum class IosAppIcon(
     val label: StringResource,
 ) {
-    ORIGINAL(Res.string.app_icon_original),
     ARCTIC_HAZE(Res.string.app_icon_arctic_haze),
     LAVENDER_LEAP(Res.string.app_icon_lavender_leap),
     METROMALLOW(Res.string.app_icon_metromallow),
@@ -36,10 +33,9 @@ private enum class IosAppIcon(
     STATIC(Res.string.app_icon_static),
     ZENITH_BLACK(Res.string.app_icon_zenith_black),
     ZENITH_WHITE(Res.string.app_icon_zenith_white),
-    GRADIENT(Res.string.app_icon_gradient),
     ;
 
-    val assetName: String? get() = name.takeUnless { this == ORIGINAL }
+    val assetName: String? get() = name.takeUnless { this == LAVENDER_LEAP }
 }
 
 private object IosAppIconSelection {

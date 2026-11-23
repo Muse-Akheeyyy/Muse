@@ -12,10 +12,8 @@ import androidx.annotation.DrawableRes
 import io.github.museakheeyyy.muse.android.R
 import io.github.museakheeyyy.muse.shared.generated.resources.Res
 import io.github.museakheeyyy.muse.shared.generated.resources.app_icon_arctic_haze
-import io.github.museakheeyyy.muse.shared.generated.resources.app_icon_gradient
 import io.github.museakheeyyy.muse.shared.generated.resources.app_icon_lavender_leap
 import io.github.museakheeyyy.muse.shared.generated.resources.app_icon_metromallow
-import io.github.museakheeyyy.muse.shared.generated.resources.app_icon_original
 import io.github.museakheeyyy.muse.shared.generated.resources.app_icon_pride_special
 import io.github.museakheeyyy.muse.shared.generated.resources.app_icon_static
 import io.github.museakheeyyy.muse.shared.generated.resources.app_icon_zenith_black
@@ -33,13 +31,6 @@ enum class AppIcon(
     @DrawableRes val previewBackgroundRes: Int? = null,
     val enabledByDefault: Boolean = false,
 ) {
-    ORIGINAL(
-        aliasName = "MainActivityOriginal",
-        labelRes = Res.string.app_icon_original,
-        previewRes = R.drawable.ic_launcher_foreground,
-        previewBackgroundRes = R.drawable.app_icon_original_background,
-        enabledByDefault = true,
-    ),
     ARCTIC_HAZE(
         aliasName = "MainActivityArcticHaze",
         labelRes = Res.string.app_icon_arctic_haze,
@@ -51,6 +42,7 @@ enum class AppIcon(
         labelRes = Res.string.app_icon_lavender_leap,
         previewRes = R.drawable.app_icon_lavender_leap_foreground,
         previewBackgroundRes = R.drawable.app_icon_lavender_leap_background,
+        enabledByDefault = true,
     ),
     METROMALLOW(
         aliasName = "MainActivityMetromallow",
@@ -80,15 +72,10 @@ enum class AppIcon(
         labelRes = Res.string.app_icon_zenith_white,
         previewRes = R.drawable.app_icon_zenith_white_full,
     ),
-    GRADIENT(
-        aliasName = "MainActivityGradient",
-        labelRes = Res.string.app_icon_gradient,
-        previewRes = R.drawable.app_icon_gradient_full,
-    ),
     ;
 
     companion object {
-        fun fromPreference(value: String): AppIcon = entries.firstOrNull { it.name == value } ?: ORIGINAL
+        fun fromPreference(value: String): AppIcon = entries.firstOrNull { it.name == value } ?: LAVENDER_LEAP
     }
 }
 
