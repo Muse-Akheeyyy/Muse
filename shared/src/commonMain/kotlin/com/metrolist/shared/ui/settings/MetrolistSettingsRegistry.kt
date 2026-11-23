@@ -141,7 +141,6 @@ fun rememberMetrolistSettingsRegistry(
                     SettingsPageId.ABOUT -> {
                         listOf(
                             Res.string.credits_creator_section,
-                            Res.string.credits_collaborators_section,
                             Res.string.brand_github,
                             Res.string.brand_discord,
                             Res.string.brand_telegram,

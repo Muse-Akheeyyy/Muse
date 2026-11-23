@@ -9,12 +9,12 @@ private val partyCodePattern = Regex("^[A-Za-z0-9_-]{1,64}$")
 
 fun normalizeMetrolistShareUrl(text: String): String {
     val trimmed = text.trim()
-    if (trimmed.startsWith("metrolist://", ignoreCase = true)) {
-        val afterScheme = trimmed.substring("metrolist://".length).trimStart('/')
+    if (trimmed.startsWith("muse://", ignoreCase = true)) {
+        val afterScheme = trimmed.substring("muse://".length).trimStart('/')
         if (afterScheme.startsWith("open?", ignoreCase = true)) {
             val decoded =
                 runCatching {
-                    Url("https://metrolist.internal/?${afterScheme.substringAfter('?')}").parameters["url"]
+                    Url("https://muse.internal/?${afterScheme.substringAfter('?')}").parameters["url"]
                 }.getOrNull() ?: afterScheme.substringAfter("url=")
             return normalizeMetrolistShareUrl(decoded)
         }
@@ -36,10 +36,10 @@ fun normalizeMetrolistShareUrl(text: String): String {
         }.getOrNull() ?: return trimmed
 
     val host = url.host.lowercase().removeSuffix(".")
-    val isMetrolistHost =
-        host == "metrolist.cc" || host.endsWith(".metrolist.cc")
+    val isMuseHost =
+        host == "muse-akheeyyy.pages.dev" || host.endsWith(".muse-akheeyyy.pages.dev")
 
-    if (isMetrolistHost) {
+    if (isMuseHost) {
         val path = url.encodedPath
         when {
             path == "/open" -> {
@@ -88,7 +88,7 @@ fun extractListenTogetherRoomCode(value: String?): String? {
     if (trimmed.isEmpty()) return null
 
     val target =
-        if (trimmed.startsWith("metrolist://open?", ignoreCase = true)) {
+        if (trimmed.startsWith("muse://open?", ignoreCase = true)) {
             val query = trimmed.substringAfter('?')
             val encoded = query.substringAfter("url=", "")
             runCatching { Url("https://internal/?$query").parameters["url"] }.getOrNull()
@@ -100,8 +100,8 @@ fun extractListenTogetherRoomCode(value: String?): String? {
     val url =
         runCatching {
             Url(
-                if (target.startsWith("metrolist://", ignoreCase = true)) {
-                    target.replaceFirst(Regex("^metrolist://", RegexOption.IGNORE_CASE), "https://metrolist.cc/")
+                if (target.startsWith("muse://", ignoreCase = true)) {
+                    target.replaceFirst(Regex("^muse://", RegexOption.IGNORE_CASE), "https://muse-akheeyyy.pages.dev/")
                 } else if (!target.contains("://")) {
                     "https://$target"
                 } else {
@@ -112,10 +112,10 @@ fun extractListenTogetherRoomCode(value: String?): String? {
 
     if (url != null) {
         val host = url.host.lowercase().removeSuffix(".")
-        val isMetrolistHost =
-            host == "metrolist.cc" || host.endsWith(".metrolist.cc")
+        val isMuseHost =
+            host == "muse-akheeyyy.pages.dev" || host.endsWith(".muse-akheeyyy.pages.dev")
 
-        if (isMetrolistHost) {
+        if (isMuseHost) {
             val path = url.encodedPath.trim('/')
             val rParam = url.parameters["r"] ?: url.parameters["code"]
             if (path == "party" || path.startsWith("party/")) {
@@ -129,8 +129,8 @@ fun extractListenTogetherRoomCode(value: String?): String? {
         }
     }
 
-    if (target.startsWith("metrolist://", ignoreCase = true)) {
-        val afterScheme = target.substring("metrolist://".length).trimStart('/')
+    if (target.startsWith("muse://", ignoreCase = true)) {
+        val afterScheme = target.substring("muse://".length).trimStart('/')
         val path = afterScheme.substringBefore('?')
         val query = afterScheme.substringAfter('?', "")
         val rParam =

@@ -91,8 +91,8 @@ object DesktopUrlHandler {
                 .trim()
         if (trimmed.isEmpty()) return null
 
-        if (trimmed.startsWith("metrolist://", ignoreCase = true)) {
-            val afterScheme = trimmed.substring("metrolist://".length)
+        if (trimmed.startsWith("muse://", ignoreCase = true)) {
+            val afterScheme = trimmed.substring("muse://".length)
             if (afterScheme.startsWith("open?url=", ignoreCase = true)) {
                 val encoded = afterScheme.substring("open?url=".length)
                 val decoded = runCatching { URLDecoder.decode(encoded, StandardCharsets.UTF_8) }.getOrDefault(encoded)

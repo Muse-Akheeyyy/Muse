@@ -64,6 +64,7 @@ import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
@@ -91,6 +92,7 @@ import com.metrolist.shared.ui.utils.toPolygonShape
 import com.metrolist.shared.ui.utils.verticalScrollWithDrag
 import com.metrolist.shared.utils.getAppArchitecture
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -225,23 +227,27 @@ fun AboutScreen(
                 onContributorLongClick = onContributorLongClick,
             )
 
-            CollaboratorsList(
-                contributors = AboutContributors.leads,
-                text = text,
-                title = text.leadsSection,
-                avatarSize = 64.dp,
-                colorScheme = colorScheme,
-                onContributorClick = { selectedContributor = it },
-                onContributorLongClick = onContributorLongClick,
-            )
+            if (AboutContributors.leads.isNotEmpty()) {
+                CollaboratorsList(
+                    contributors = AboutContributors.leads,
+                    text = text,
+                    title = text.leadsSection,
+                    avatarSize = 64.dp,
+                    colorScheme = colorScheme,
+                    onContributorClick = { selectedContributor = it },
+                    onContributorLongClick = onContributorLongClick,
+                )
+            }
 
-            CollaboratorsList(
-                contributors = AboutContributors.collaborators,
-                text = text,
-                colorScheme = colorScheme,
-                onContributorClick = { selectedContributor = it },
-                onContributorLongClick = onContributorLongClick,
-            )
+            if (AboutContributors.collaborators.isNotEmpty()) {
+                CollaboratorsList(
+                    contributors = AboutContributors.collaborators,
+                    text = text,
+                    colorScheme = colorScheme,
+                    onContributorClick = { selectedContributor = it },
+                    onContributorLongClick = onContributorLongClick,
+                )
+            }
 
             Text(
                 text = text.licenseDescription,
@@ -419,12 +425,24 @@ private fun ContributorAvatar(
         color = colorScheme.surfaceContainerHighest,
         tonalElevation = 4.dp,
     ) {
-        AsyncImage(
-            url = contributor.avatarUrl,
-            contentDescription = null,
-            shape = shape,
-            modifier = Modifier.fillMaxSize(),
-        )
+        val avatarRes = contributor.customAvatarRes
+        if (avatarRes != null) {
+            Image(
+                painter = painterResource(avatarRes),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize(),
+            )
+        } else {
+            contributor.avatarUrl?.let { url ->
+                AsyncImage(
+                    url = url,
+                    contentDescription = null,
+                    shape = shape,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
+        }
     }
 }
 

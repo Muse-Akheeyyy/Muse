@@ -135,7 +135,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" />
-                <data android:host="metrolist.cc" />
+                <data android:host="muse-akheeyyy.pages.dev" />
                 <data android:pathPrefix="/listen" />
                 <data android:pathPrefix="/party" />
                 <data android:pathPrefix="/watch" />
@@ -150,7 +150,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="metrolist" android:host="listen-together" />
+                <data android:scheme="muse" android:host="listen-together" />
             </intent-filter>
 
             <intent-filter android:autoVerify="true">
@@ -194,7 +194,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="vnd.youtube" />
                 <data android:scheme="vnd.youtube.launch" />
-                <data android:scheme="metrolist" />
+                <data android:scheme="muse" />
             </intent-filter>
 
             <intent-filter>

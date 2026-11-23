@@ -476,7 +476,7 @@ fun MetrolistIOSApp() {
                     if (isCrashReportingAvailable()) Settings.shared.sentryEnabled = consent
                     Settings.shared.iosOnboardingComplete = true
                     showOnboarding = false
-                    if (login) handleOpenUrl("metrolist://login")
+                    if (login) handleOpenUrl("muse://login")
                     if (restore) initialSettingsPage = SettingsPageId.BACKUP_RESTORE
                 }
             }

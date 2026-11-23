@@ -735,7 +735,7 @@ compose.desktop {
                 "mac" -> targetFormats(TargetFormat.Dmg)
                 else -> targetFormats(TargetFormat.Deb, TargetFormat.Rpm, TargetFormat.AppImage)
             }
-            packageName = "Metrolist"
+            packageName = "Muse"
             val versionMatch =
                 Regex("""^(\d+)\.(\d+)\.(\d+)(?:-[A-Za-z0-9][A-Za-z0-9._-]*)?(?:\+[0-9A-Za-z.-]+)?$""")
                     .matchEntire(appVersion)
@@ -760,9 +760,9 @@ compose.desktop {
                 } else {
                     versionComponents.joinToString(".")
                 }
-            description = "Metrolist"
-            copyright = "© 2026 Metrolist"
-            vendor = "MetrolistGroup"
+            description = "Muse"
+            copyright = "© 2026 Muse"
+            vendor = "Muse-Akheeyyy"
 
             appResourcesRootDir.set(nativeResourcesDir)
 
@@ -809,14 +809,14 @@ compose.desktop {
                 jvmArgs += listOf("-Djava.locale.providers=CLDR,SPI", "-Dwebkit.disable.dmabuf.renderer=1")
             }
             macOS {
-                bundleID = "com.metrolist.desktop"
+                bundleID = "io.github.museakheeyyy.muse.desktop"
                 // Bytedeco's FFmpeg dylibs are built for macOS 15; older systems fail to load them at playback.
                 minimumSystemVersion = "15.0"
                 infoPlist {
                     extraKeysRawXml =
                         """
                         <key>NSLocalNetworkUsageDescription</key>
-                        <string>Metrolist uses the local network to find and control casting devices.</string>
+                        <string>Muse uses the local network to find and control casting devices.</string>
                         <key>NSBonjourServices</key>
                         <array>
                             <string>_fcast._tcp</string>
@@ -826,10 +826,10 @@ compose.desktop {
                         <array>
                             <dict>
                                 <key>CFBundleURLName</key>
-                                <string>Metrolist URL</string>
+                                <string>Muse URL</string>
                                 <key>CFBundleURLSchemes</key>
                                 <array>
-                                    <string>metrolist</string>
+                                    <string>muse</string>
                                     <string>metrolist-auth</string>
                                 </array>
                             </dict>
@@ -838,7 +838,7 @@ compose.desktop {
                 }
                 iconFile.set(project.file("src/desktopMain/resources/logo.icns"))
                 dmgPackageVersion = packageVersion
-                dockName = "Metrolist"
+                dockName = "Muse"
             }
         }
     }
@@ -846,8 +846,8 @@ compose.desktop {
 
 val cdsCache =
     when (platform) {
-        "win" -> "\$LOCALAPPDATA/Metrolist/cache"
-        "mac" -> "\$HOME/Library/Caches/com.metrolist.desktop"
+        "win" -> "\$LOCALAPPDATA/Muse/cache"
+        "mac" -> "\$HOME/Library/Caches/io.github.museakheeyyy.muse.desktop"
         else -> "\$METROLIST_CDS_CACHE"
     }
 // Compose assigns launcherJvmArgs while registering its tasks after project evaluation.

@@ -10,10 +10,10 @@ fun parseListenTogetherInvitation(value: String): String? {
     val code =
         when {
             uri.protocol == URLProtocol.HTTPS &&
-                uri.host.equals("metrolist.cc", ignoreCase = true) &&
+                uri.host.equals("muse-akheeyyy.pages.dev", ignoreCase = true) &&
                 uri.encodedPath.trim('/') == "listen" -> uri.parameters["code"]
 
-            uri.protocol.name == "metrolist" && uri.host == "listen-together" -> uri.encodedPath.trim('/')
+            uri.protocol.name == "muse" && uri.host == "listen-together" -> uri.encodedPath.trim('/')
 
             else -> null
         }

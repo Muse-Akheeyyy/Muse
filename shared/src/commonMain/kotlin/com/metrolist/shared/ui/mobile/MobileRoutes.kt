@@ -179,7 +179,7 @@ private fun partyInvitation(code: String?): MobileDeepLink? =
 
 internal fun resolveMobilePodcastBrowseLink(value: String): MobileRoute.Podcast? {
     val link = value.trim()
-    if (link.startsWith("metrolist://", ignoreCase = true)) {
+    if (link.startsWith("muse://", ignoreCase = true)) {
         // Explicit app routes keep their own destination/id; "open" just wraps a media link.
         val path = link.substringAfter("://").trimStart('/').substringBefore('?')
         if (!path.equals("open", ignoreCase = true)) return null
@@ -190,13 +190,14 @@ internal fun resolveMobilePodcastBrowseLink(value: String): MobileRoute.Podcast?
 internal fun resolveMobileDeepLink(callback: String): MobileDeepLink? {
     parseListenTogetherInvitation(callback)?.let { return MobileDeepLink.Destination(MobileRoute.ListenTogether(it)) }
     resolveMobilePodcastBrowseLink(callback)?.let { return MobileDeepLink.Destination(it) }
-    val uri = runCatching { Url(callback.replace("metrolist://", "https://app.metrolist/")) }.getOrNull()
-    val path = uri?.encodedPath?.trim('/') ?: callback.removePrefix("metrolist://").substringBefore('?').trim('/')
-    if (!callback.startsWith("metrolist://")) {
+    val uri = runCatching { Url(callback.replace("muse://", "https://app.muse/")) }.getOrNull()
+    val path = uri?.encodedPath?.trim('/') ?: callback.removePrefix("muse://").substringBefore('?').trim('/')
+    if (!callback.startsWith("muse://")) {
         val host = uri?.host?.lowercase()?.removeSuffix(".")
-        val isMetrolistHost =
-            uri?.protocol == URLProtocol.HTTPS && (host == "metrolist.cc" || host?.endsWith(".metrolist.cc") == true)
-        return if (isMetrolistHost) {
+        val isMuseHost =
+            uri?.protocol == URLProtocol.HTTPS &&
+                (host == "muse-akheeyyy.pages.dev" || host?.endsWith(".muse-akheeyyy.pages.dev") == true)
+        return if (isMuseHost) {
             when (path) {
                 "listen" -> listenTogetherInvitation(uri.parameters["code"])
                 "party" -> partyInvitation(uri.parameters["r"] ?: uri.parameters["code"])

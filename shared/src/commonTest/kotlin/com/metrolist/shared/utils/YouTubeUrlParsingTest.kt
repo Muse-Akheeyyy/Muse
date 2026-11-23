@@ -27,14 +27,14 @@ class YouTubeUrlParsingTest {
 
     @Test
     fun wrappedVideoLinksPreserveTargetStartPosition() {
-        val wrapped = "https://metrolist.cc/open?url=https%3A%2F%2Fyoutu.be%2FR93xV3v718s%3Ft%3D143s"
+        val wrapped = "https://muse-akheeyyy.pages.dev/open?url=https%3A%2F%2Fyoutu.be%2FR93xV3v718s%3Ft%3D143s"
         assertEquals(143_000L, parseYouTubeStartPositionMs(wrapped))
-        assertEquals(143_000L, parseYouTubeStartPositionMs(wrapped.replace("https://metrolist.cc/", "metrolist://")))
+        assertEquals(143_000L, parseYouTubeStartPositionMs(wrapped.replace("https://muse-akheeyyy.pages.dev/", "muse://")))
     }
 
     @Test
     fun wrapperTimestampDoesNotOverrideTargetTimestamp() {
-        val wrapped = "https://metrolist.cc/open?url=https%3A%2F%2Fyoutu.be%2FR93xV3v718s%3Ft%3D143s&t=999"
+        val wrapped = "https://muse-akheeyyy.pages.dev/open?url=https%3A%2F%2Fyoutu.be%2FR93xV3v718s%3Ft%3D143s&t=999"
         assertEquals(143_000L, parseYouTubeStartPositionMs(wrapped))
     }
 
@@ -42,29 +42,27 @@ class YouTubeUrlParsingTest {
     fun wrappedVideoLinksPreserveTargetFragmentTimestamp() {
         assertEquals(
             120_000L,
-            parseYouTubeStartPositionMs("https://metrolist.cc/open?url=https%3A%2F%2Fyoutu.be%2FR93xV3v718s%23t%3D2m"),
+            parseYouTubeStartPositionMs("https://muse-akheeyyy.pages.dev/open?url=https%3A%2F%2Fyoutu.be%2FR93xV3v718s%23t%3D2m"),
         )
     }
 
     @Test
     fun metrolistWatchLinksPreserveFragmentTimestamp() {
-        assertEquals(120_000L, parseYouTubeStartPositionMs("https://metrolist.cc/watch?v=R93xV3v718s#t=2m"))
+        assertEquals(120_000L, parseYouTubeStartPositionMs("https://muse-akheeyyy.pages.dev/watch?v=R93xV3v718s#t=2m"))
     }
 
     @Test
     fun wrappedNonVideoTargetDoesNotHaveStartPosition() {
-        assertEquals(
-            0L,
-            parseYouTubeStartPositionMs("https://metrolist.cc/open?url=https%3A%2F%2Fexample.org%2Fwatch%3Fv%3DR93xV3v718s%26t%3D143"),
-        )
+        val url = "https://muse-akheeyyy.pages.dev/open?url=https%3A%2F%2Fexample.org%2Fwatch%3Fv%3DR93xV3v718s%26t%3D143"
+        assertEquals(0L, parseYouTubeStartPositionMs(url))
     }
 
     @Test
     fun podcastBrowseLinksUseValidatedHostsAndDistinctIds() {
         listOf(
             "https://music.youtube.com/browse/MPSP_show?si=shared",
-            "metrolist://browse/MPSP_show",
-            "https://metrolist.cc/browse/MPSP_show",
+            "muse://browse/MPSP_show",
+            "https://muse-akheeyyy.pages.dev/browse/MPSP_show",
         ).forEach {
             assertEquals("MPSP_show", parseYouTubePodcastId(it))
         }
@@ -136,13 +134,13 @@ class YouTubeUrlParsingTest {
 
     @Test
     fun parsesMetrolistCcWatchUrl() {
-        val parsed = parseYouTubeUrl("https://metrolist.cc/watch?v=R93xV3v718s")
+        val parsed = parseYouTubeUrl("https://muse-akheeyyy.pages.dev/watch?v=R93xV3v718s")
         assertEquals("R93xV3v718s", assertIs<YouTubeUrlParser.ParsedUrl.Video>(parsed).id)
     }
 
     @Test
     fun parsesMetrolistCustomScheme() {
-        val parsed = parseYouTubeUrl("metrolist://watch?v=R93xV3v718s")
+        val parsed = parseYouTubeUrl("muse://watch?v=R93xV3v718s")
         assertEquals("R93xV3v718s", assertIs<YouTubeUrlParser.ParsedUrl.Video>(parsed).id)
     }
 
@@ -151,9 +149,9 @@ class YouTubeUrlParsingTest {
         val target = "https://music.youtube.com/watch?v=R93xV3v718s&t=143s"
         val encoded = "https%3A%2F%2Fmusic.youtube.com%2Fwatch%3Fv%3DR93xV3v718s%26t%3D143s"
         for (link in listOf(
-            "metrolist://open?url=$encoded",
-            "METROLIST://OPEN?url=$encoded&source=share",
-            "metrolist://open?source=share&url=$encoded",
+            "muse://open?url=$encoded",
+            "MUSE://OPEN?url=$encoded&source=share",
+            "muse://open?source=share&url=$encoded",
         )) {
             assertEquals(target, normalizeMetrolistShareUrl(link), link)
             assertEquals("R93xV3v718s", assertIs<YouTubeUrlParser.ParsedUrl.Video>(parseYouTubeUrl(link)).id)
@@ -162,19 +160,19 @@ class YouTubeUrlParsingTest {
 
     @Test
     fun parsesMetrolistCustomSchemeNineDigitId() {
-        val parsed = parseYouTubeUrl("metrolist://watch?v=123456789")
+        val parsed = parseYouTubeUrl("muse://watch?v=123456789")
         assertEquals("123456789", assertIs<YouTubeUrlParser.ParsedUrl.Video>(parsed).id)
     }
 
     @Test
     fun extractsListenTogetherRoomCodes() {
-        assertEquals("LISTENTOGETHERID", extractListenTogetherRoomCode("metrolist://party?r=listentogetherid"))
-        assertEquals("LISTENTOGETHERID", extractListenTogetherRoomCode("https://metrolist.cc/party?r=listentogetherid"))
-        assertEquals("ROOM1234", extractListenTogetherRoomCode("metrolist://party?r=ROOM1234"))
-        assertEquals("ROOM1234", extractListenTogetherRoomCode("metrolist://listen?code=ROOM1234"))
-        assertEquals("ROOM1234", extractListenTogetherRoomCode("https://metrolist.cc/listen?code=ROOM1234"))
-        assertEquals("ROOM1234", extractListenTogetherRoomCode("metrolist://listen-together/ROOM1234"))
-        assertTrue(isListenTogetherUrl("metrolist://party?r=listentogetherid"))
+        assertEquals("LISTENTOGETHERID", extractListenTogetherRoomCode("muse://party?r=listentogetherid"))
+        assertEquals("LISTENTOGETHERID", extractListenTogetherRoomCode("https://muse-akheeyyy.pages.dev/party?r=listentogetherid"))
+        assertEquals("ROOM1234", extractListenTogetherRoomCode("muse://party?r=ROOM1234"))
+        assertEquals("ROOM1234", extractListenTogetherRoomCode("muse://listen?code=ROOM1234"))
+        assertEquals("ROOM1234", extractListenTogetherRoomCode("https://muse-akheeyyy.pages.dev/listen?code=ROOM1234"))
+        assertEquals("ROOM1234", extractListenTogetherRoomCode("muse://listen-together/ROOM1234"))
+        assertTrue(isListenTogetherUrl("muse://party?r=listentogetherid"))
         assertNull(extractListenTogetherRoomCode("https://example.com/party?r=listentogetherid"))
         assertNull(extractListenTogetherRoomCode("not a url"))
     }

@@ -5,7 +5,7 @@
     <key>CFBundleDevelopmentRegion</key>
     <string>$(DEVELOPMENT_LANGUAGE)</string>
     <key>CFBundleDisplayName</key>
-    <string>Metrolist</string>
+    <string>Muse</string>
     <key>CFBundleExecutable</key>
     <string>$(EXECUTABLE_NAME)</string>
     <key>CFBundleIdentifier</key>
@@ -28,7 +28,7 @@
             <key>CFBundleURLSchemes</key>
             <array>
                 <string>metrolist-auth</string>
-                <string>metrolist</string>
+                <string>muse</string>
             </array>
         </dict>
     </array>
