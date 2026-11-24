@@ -1,0 +1,238 @@
+{
+  "reflection": [
+    {
+      "type": "io.github.museakheeyyy.muse.desktop.input.LinuxPhysicalKeyCapture$callback$1",
+      "methods": [
+        {
+          "name": "invoke",
+          "parameterTypes": [
+            "com.sun.jna.Pointer",
+            "com.sun.jna.Pointer"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "io.github.museakheeyyy.muse.desktop.input.X11",
+      "jniAccessible": true,
+      "allDeclaredMethods": true
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.github.museakheeyyy.muse.desktop.input.X11"
+        ]
+      }
+    },
+    {
+      "type": "io.github.museakheeyyy.muse.desktop.input.XTestRecord",
+      "jniAccessible": true,
+      "allDeclaredMethods": true
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.github.museakheeyyy.muse.desktop.input.XTestRecord"
+        ]
+      }
+    },
+    {
+      "type": "io.github.museakheeyyy.muse.desktop.input.Posix",
+      "jniAccessible": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.github.museakheeyyy.muse.desktop.input.Posix"
+        ]
+      }
+    },
+    {
+      "type": "io.github.museakheeyyy.muse.desktop.input.PollFd",
+      "jniAccessible": true,
+      "allDeclaredFields": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "io.github.museakheeyyy.muse.desktop.input.XRecordInterceptProc",
+      "jniAccessible": true,
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "io.github.museakheeyyy.muse.desktop.input.XRecordInterceptData",
+      "jniAccessible": true,
+      "allDeclaredFields": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "io.github.museakheeyyy.muse.desktop.utils.WindowMoveX11",
+      "jniAccessible": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "io.github.museakheeyyy.muse.desktop.utils.WaylandScale$LibC",
+      "jniAccessible": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "io.github.museakheeyyy.muse.desktop.utils.NativeMemoryTrimmer$LinuxAllocator",
+      "jniAccessible": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "io.github.museakheeyyy.muse.desktop.web.LinuxWebViewCanvas$Gdk",
+      "jniAccessible": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "io.github.museakheeyyy.muse.desktop.web.GLib",
+      "jniAccessible": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "io.github.museakheeyyy.muse.shared.settings.LinuxSecretServiceWriter$Secret",
+      "jniAccessible": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "io.github.museakheeyyy.muse.shared.settings.LinuxSecretServiceWriter$Glib",
+      "jniAccessible": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "io.github.museakheeyyy.muse.shared.settings.LinuxSecretServiceWriter$Gio",
+      "jniAccessible": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "io.github.museakheeyyy.muse.shared.settings.LinuxSecretServiceWriter$Gobject",
+      "jniAccessible": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "io.github.museakheeyyy.muse.desktop.web.GtkTask",
+      "jniAccessible": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.github.museakheeyyy.muse.desktop.utils.WindowMoveX11"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.github.museakheeyyy.muse.desktop.utils.WaylandScale$LibC"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.github.museakheeyyy.muse.desktop.utils.NativeMemoryTrimmer$LinuxAllocator"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.github.museakheeyyy.muse.desktop.web.LinuxWebViewCanvas$Gdk"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.github.museakheeyyy.muse.desktop.web.GLib"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.github.museakheeyyy.muse.shared.settings.LinuxSecretServiceWriter$Secret"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.github.museakheeyyy.muse.shared.settings.LinuxSecretServiceWriter$Glib"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.github.museakheeyyy.muse.shared.settings.LinuxSecretServiceWriter$Gio"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.github.museakheeyyy.muse.shared.settings.LinuxSecretServiceWriter$Gobject"
+        ]
+      }
+    },
+    {
+      "type": "com.sun.jna.platform.unix.LibC",
+      "jniAccessible": true,
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": {
+        "proxy": [
+          "com.sun.jna.platform.unix.LibC"
+        ]
+      }
+    },
+    {
+      "type": "sun.awt.AWTAccessor",
+      "methods": [
+        {
+          "name": "getAWTEventAccessor",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.awt.AWTAccessor$AWTEventAccessor",
+      "methods": [
+        {
+          "name": "getBData",
+          "parameterTypes": [
+            "java.awt.AWTEvent"
+          ]
+        }
+      ]
+    }
+  ]
+}
