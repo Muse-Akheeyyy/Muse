@@ -1,144 +1,82 @@
-<div style="display: flex; gap: 1rem;">
-  <img src="fastlane/metadata/android/en-US/images/icon.png" alt="Muse app icon" width="160" height="160" />
-  <div>
-      <h1>Muse</h1>
-      <h3>A Material Design YouTube Music client for Android, iOS and desktop</h3>
-      <div style="display: flex; gap: 1rem;">
-        <a href="https://github.com/Muse-Akheeyyy/Muse/releases"><img src="https://img.shields.io/github/v/release/Muse-Akheeyyy/Muse?style=for-the-badge&labelColor=0d1117" alt="Latest release" /></a>
-        <a href="https://github.com/Muse-Akheeyyy/Muse/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Muse-Akheeyyy/Muse?style=for-the-badge&labelColor=0d1117" alt="License" /></a>
-        <a href="https://github.com/Muse-Akheeyyy/Muse/releases"><img src="https://img.shields.io/github/downloads/Muse-Akheeyyy/Muse/total?style=for-the-badge&labelColor=0d1117" alt="Downloads" /></a>
-      </div>
-  </div>
+<div align="center">
+
+<a href="https://github.com/Muse-Akheeyyy/Muse/releases/latest"><img src="assets/hero.svg" alt="Muse — music without the noise" width="100%" /></a>
+
+<br/>
+
+<a href="https://github.com/Muse-Akheeyyy/Muse/releases"><img src="https://img.shields.io/github/v/release/Muse-Akheeyyy/Muse?style=flat-square&labelColor=1b1424&color=8e6fc1" alt="Latest release" /></a>
+<a href="https://github.com/Muse-Akheeyyy/Muse/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Muse-Akheeyyy/Muse?style=flat-square&labelColor=1b1424&color=8e6fc1" alt="License" /></a>
+<a href="https://github.com/Muse-Akheeyyy/Muse/releases"><img src="https://img.shields.io/github/downloads/Muse-Akheeyyy/Muse/total?style=flat-square&labelColor=1b1424&color=8e6fc1" alt="Downloads" /></a>
+<a href="https://muse-akheeyyy.pages.dev"><img src="https://img.shields.io/badge/site-muse--akheeyyy-8e6fc1?style=flat-square&labelColor=1b1424" alt="Muse site" /></a>
+<a href="https://discord.gg/FW6EX7Wgz"><img src="https://img.shields.io/badge/discord-join-5865F2?style=flat-square&labelColor=1b1424" alt="Discord" /></a>
+
+<br/><br/>
+
+<a href="https://github.com/Muse-Akheeyyy/Muse/releases/latest/download/Muse.apk"><img src="assets/download-button.svg" width="260" alt="Download the latest APK" /></a>
+
+<br/>
+
+<sub>Android 7+ · every build is signed with the same key, so updates install straight over the old one</sub>
+
 </div>
 
-<br>
-
-<div style="display: flex; gap: 0.5rem; align-items: center;">
-  <a href="https://muse-akheeyyy.pages.dev"><img src="https://img.shields.io/badge/Muse%20site-6F4FA8?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Muse site" height="32" /></a>
-  <a href="https://discord.gg/FW6EX7Wgz"><img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord" height="32" /></a>
-  <a href="https://github.com/Muse-Akheeyyy/Muse/releases/latest/download/Muse.apk"><img src="https://img.shields.io/badge/Download-APK-8E6FC1?style=for-the-badge&logo=android&logoColor=white" alt="Download the latest APK" height="32" /></a>
-</div>
-
-<br>
+<br/>
 
 > [!WARNING]
 > <details>
 >   <summary>The use of Muse to access YouTube Music may violate YouTube's Terms of Service.</summary>
->   <p>You use Muse at your own risk. You are solely responsible for any consequences. Muse and the Metrolist contributors are not liable for damages, claims or actions against your account. We have received no reports of bans or restrictions, but that does not guarantee your account's safety.</p>
+>   <p>You use Muse at your own risk and are solely responsible for the consequences. Muse and the Metrolist contributors are not liable for damages, claims or actions against your account.</p>
 > </details>
 >
-> YouTube Music is region-restricted. If the service is unavailable in your region, you need a [VPN or proxy in a supported region](https://one.one.one.one/) to use the app. [Changing your DNS](https://developers.cloudflare.com/1.1.1.1/setup/) can bypass some blocks.
+> YouTube Music is region-restricted. If it is unavailable where you are, use a [VPN or proxy in a supported region](https://one.one.one.one/).
 
-<div align="center">
-<h1>Features</h1>
-</div>
-
-- YouTube Music playback with or without signing in
-- Android 7+, iOS 15+, Windows 10+, macOS 15+ and Linux support
-- Material 3 Expressive design
-- Discord Rich Presence and scrobbling through Last.fm and ListenBrainz
-- No ads
-- Listen Together for shared playback online
-- Casting to Google Cast, F-Cast and SONOS devices, and over DLNA (Android and desktop)
-- Backup and playlist imports from 30+ clients and 6 services
-- Music recognition through Shazam
-- Lyrics with translation and romanization
-- Translations in over 15 languages
-- Video playback (Android and desktop)
-- Content filters for AI-generated content, explicit-only playback and SFW-only playback
-- Canvas from Apple Music, Spotify and YouTube Music
-- Player, thumbnail, miniplayer and background styles
-- Custom fonts and app icons
-
-<br>
-
-<div align="center">
-
-<h1><a id="download-now"></a>Download now</h1>
-
-<h3>Android</h3>
-<p><sub>Android 7+ · signed releases that update themselves from inside the app</sub></p>
-<p>
-  <a href="https://github.com/Muse-Akheeyyy/Muse/releases/latest/download/Muse.apk"><img alt="Download the stable Android APK" src="assets/badges/platform/android-stable.svg"></a>
-</p>
-
-<p>Every release comes from <a href="https://github.com/Muse-Akheeyyy/Muse/releases/latest">GitHub Releases</a> and is signed with the same key, so new versions install straight over the old one.</p>
-
-<h3>Desktop and iOS</h3>
-<p><sub>Source builds only in this fork</sub></p>
-<p>See the setup guides for <a href="docs/install/windows.md">Windows</a>, <a href="docs/install/macos.md">macOS</a>, <a href="docs/install/linux.md">Linux</a> and <a href="docs/install/ios.md">iOS</a>, or use the Gradle commands in <a href="docs/development.md">the developer docs</a>.</p>
-
-</div>
-
-<br>
-
-<div align="center">
-
-<h1>Built from Metrolist</h1>
-
-<p>Muse is an independent <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPL-3.0</a> fork of <a href="https://github.com/MetrolistGroup/Metrolist">Metrolist</a>. It keeps the same feature set and merges upstream fixes, with its own application id, icon, website and update channel, so it installs next to Metrolist without sharing data. Import a Metrolist backup to bring your library over.</p>
-
-<p><a href="https://muse-akheeyyy.pages.dev">Website</a> · <a href="https://discord.gg/FW6EX7Wgz">Discord</a> · <a href="https://github.com/Muse-Akheeyyy/Muse/releases">Releases</a> · <a href="docs/README.md">Developer docs</a></p>
-
-</div>
-
-<br>
-
-<div align="center">
-
-<h1>Special thanks</h1>
-
-Muse builds on these projects and services.
+## Features
 
 <table>
-  <thead>
-    <tr>
-      <th align="center">Project</th>
-      <th align="center">Contribution</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td align="center"><a href="https://github.com/aleksey-saenko/MusicRecognizer">MusicRecognizer</a></td>
-      <td>Music recognition through the Shazam API</td>
-    </tr>
-    <tr>
-      <td align="center"><a href="https://github.com/MetrolistGroup/innertubex">InnerTubeX</a></td>
-      <td>YouTube streaming engine, developed with help from <a href="https://github.com/ZemerTeam/">ZemerTeam</a></td>
-    </tr>
-    <tr>
-      <td align="center">Lyprio</td>
-      <td>Lyrics provider</td>
-    </tr>
-    <tr>
-      <td align="center"><a href="https://github.com/MetrolistGroup/metroserver">metroserver</a></td>
-      <td>Listen Together real-time synchronization backend</td>
-    </tr>
-  </tbody>
+  <tr>
+    <td width="33%" valign="top"><b>🎧 Playback</b><br/><sub>YouTube Music with or without signing in. No ads.</sub></td>
+    <td width="33%" valign="top"><b>🎛 Material 3</b><br/><sub>Player, miniplayer and background styles, custom fonts.</sub></td>
+    <td width="33%" valign="top"><b>🪄 Listen Together</b><br/><sub>Shared queues and synced playback with friends.</sub></td>
+  </tr>
+  <tr>
+    <td valign="top"><b>📺 Casting</b><br/><sub>Google Cast, F-Cast, SONOS and DLNA.</sub></td>
+    <td valign="top"><b>🎚 Lyrics</b><br/><sub>Synced, with translation and romanization.</sub></td>
+    <td valign="top"><b>🔄 Imports</b><br/><sub>Backups from 30+ clients and 6 services.</sub></td>
+  </tr>
+  <tr>
+    <td valign="top"><b>🧠 Recognition</b><br/><sub>Shazam, Discord Rich Presence, Last.fm and ListenBrainz.</sub></td>
+    <td valign="top"><b>🌐 Everywhere</b><br/><sub>Android, iOS, Windows, macOS and Linux.</sub></td>
+    <td valign="top">&nbsp;</td>
+  </tr>
 </table>
-</div>
 
-<br>
+## Install
 
-<div align="center">
+1. Tap the download button above, or grab `Muse.apk` from [Releases](https://github.com/Muse-Akheeyyy/Muse/releases/latest).
+2. Allow installing from this source when Android asks.
+3. Open it. Later releases install as normal updates, and the app checks for them from the Updates settings.
 
-<h1><a id="translations"></a>Translations</h1>
+<details>
+<summary>Desktop and iOS</summary>
 
-<p>Translations come from the upstream Metrolist project. <a href="https://hosted.weblate.org/projects/Metrolist/">Contribute a translation</a>.</p>
-</div>
+This fork publishes Android builds only; the desktop and iOS sources build from source. Guides: [Windows](docs/install/windows.md) · [macOS](docs/install/macos.md) · [Linux](docs/install/linux.md) · [iOS](docs/install/ios.md).
 
-<br>
+</details>
 
-> [!WARNING]
-> <h2>Legal disclaimer</h2>
-> <p>This project is not affiliated with, funded, authorized or endorsed by YouTube, Google LLC, MetroList MLS, or their affiliates and subsidiaries.</p>
->
-> <p>All trademarks, service marks, and intellectual property rights referenced in this project belong to their respective owners.</p>
+## Build
+
+```powershell
+.\gradle.ps1 :androidApp:assembleDebug     # APK -> androidApp\build\outputs\apk\debug\
+.\gradle.ps1 :desktopApp:run               # run the desktop app
+```
+
+Releases come from GitHub Actions: a `v*` tag builds, signs and publishes `Muse.apk`. See the [developer docs](docs/README.md) and the [release guide](docs/releasing.md).
 
 <br/>
 
 <div align="center">
-
-**Muse is maintained by [Akhil TG](https://muse-akheeyyy.pages.dev)**
-
+<sub>
+Muse is an independent <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPL-3.0</a> fork of <a href="https://github.com/MetrolistGroup/Metrolist">Metrolist</a>, maintained by <a href="https://muse-akheeyyy.pages.dev">Akhil TG</a>.<br/>
+Not affiliated with YouTube, Google LLC or MetroList MLS.
+</sub>
 </div>
