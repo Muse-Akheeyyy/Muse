@@ -1,0 +1,7 @@
+package io.github.museakheeyyy.muse.shared.utils
+
+import androidx.compose.runtime.Composable
+
+@Composable
+actual fun BlockScreenshots() {
+}
