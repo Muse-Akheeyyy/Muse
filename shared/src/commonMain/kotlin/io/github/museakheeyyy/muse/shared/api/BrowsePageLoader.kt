@@ -10,6 +10,7 @@ suspend fun loadBrowsePage(
     seenTokens: Set<String>,
     loadSections: suspend (String) -> Pair<List<HomeSection>, String?>,
     loadShelf: suspend (String) -> YouTubeDataPage<YTItem>,
+    songsLast: Boolean = false,
 ): BrowsePageData {
     val shelfIndex = current.sections.indexOfFirst { it.continuation != null }
     val token = if (shelfIndex >= 0) current.sections[shelfIndex].continuation!! else current.continuation ?: return current
@@ -19,22 +20,24 @@ suspend fun loadBrowsePage(
             it in seenTokens ||
                 it == (if (shelfIndex >= 0) current.sections[shelfIndex].continuation else current.continuation)
         }
-    return if (shelfIndex >= 0) {
-        val page = loadShelf(token)
-        current.copy(
-            sections =
-                current.sections.mapIndexed { index, section ->
-                    if (index ==
-                        shelfIndex
-                    ) {
-                        section.copy(items = section.items + page.items, continuation = next(page.continuation))
-                    } else {
-                        section
-                    }
-                },
-        )
-    } else {
-        val (sections, nextToken) = loadSections(token)
-        current.copy(sections = (current.sections + sections).take(1_000), continuation = next(nextToken))
-    }
+    val updated =
+        if (shelfIndex >= 0) {
+            val page = loadShelf(token)
+            current.copy(
+                sections =
+                    current.sections.mapIndexed { index, section ->
+                        if (index ==
+                            shelfIndex
+                        ) {
+                            section.copy(items = section.items + page.items, continuation = next(page.continuation))
+                        } else {
+                            section
+                        }
+                    },
+            )
+        } else {
+            val (sections, nextToken) = loadSections(token)
+            current.copy(sections = (current.sections + sections).take(1_000), continuation = next(nextToken))
+        }
+    return if (songsLast) updated.copy(sections = updated.sections.moveSongSectionsLast()) else updated
 }

@@ -197,7 +197,10 @@ internal class YouTubeBrowseOperations(
 
                 BrowsePageData(
                     title = title ?: response.pageTitle(),
-                    sections = BlockedContent.filterSections(sections),
+                    sections =
+                        BlockedContent
+                            .filterSections(sections)
+                            .let { if (isMoodsAndGenresBrowseId(browseId)) it.moveSongSectionsLast() else it },
                     continuation = primarySectionList?.continuationToken() ?: secondarySectionList?.continuationToken(),
                 )
             } catch (e: CancellationException) {

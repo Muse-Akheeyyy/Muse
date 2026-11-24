@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import io.github.museakheeyyy.muse.shared.api.YouTubeRepository
+import io.github.museakheeyyy.muse.shared.api.isMoodsAndGenresBrowseId
 import io.github.museakheeyyy.muse.shared.api.loadBrowsePage
 import io.github.museakheeyyy.muse.shared.model.BrowsePageData
 import io.github.museakheeyyy.muse.shared.model.HomeSection
@@ -103,6 +104,7 @@ class BrowseViewModel(
                             visited,
                             loadSections = { repository.getHomeSectionsContinuation(it, isPersonal = requestLogin, loadAllPages = false) },
                             loadShelf = { repository.getBrowseShelfContinuation(it, requestLogin) },
+                            songsLast = isMoodsAndGenresBrowseId(browseId),
                         )
                     if (generation != requestGeneration) return@launch
                     seenTokens += token

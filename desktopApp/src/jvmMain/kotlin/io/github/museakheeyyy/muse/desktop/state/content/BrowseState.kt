@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import io.github.museakheeyyy.muse.desktop.state.app.AppState
 import io.github.museakheeyyy.muse.desktop.state.app.DesktopNavigation
+import io.github.museakheeyyy.muse.shared.api.isMoodsAndGenresBrowseId
 import io.github.museakheeyyy.muse.shared.api.loadBrowsePage
 import io.github.museakheeyyy.muse.shared.model.BrowsePageData
 import io.github.museakheeyyy.muse.shared.settings.BlockedContent
@@ -139,6 +140,7 @@ object BrowseState {
                                     )
                                 },
                                 loadShelf = { GlobalYouTubeRepository.instance.getBrowseShelfContinuation(it, requestLogin) },
+                                songsLast = isMoodsAndGenresBrowseId(selectedBrowseId),
                             )
                         }
                     if (generation != requestGeneration) return@launch
