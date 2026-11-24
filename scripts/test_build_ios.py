@@ -49,9 +49,9 @@ def main():
     assert "./gradlew :shared:embedAndSignAppleFrameworkForXcode" in framework_phase
     assert "sourceRevision" not in framework_phase, "The Xcode archive must use the real commit revision"
     assert "bash scripts/ios_version.sh" in framework_phase
-    assert '"$(DERIVED_FILE_DIR)/MetrolistVersion.h"' in framework_phase
+    assert '"$(DERIVED_FILE_DIR)/MuseVersion.h"' in framework_phase
     assert "INFOPLIST_PREPROCESS = YES" in xcconfig
-    assert "INFOPLIST_PREFIX_HEADER = $(DERIVED_FILE_DIR)/MetrolistVersion.h" in xcconfig
+    assert "INFOPLIST_PREFIX_HEADER = $(DERIVED_FILE_DIR)/MuseVersion.h" in xcconfig
     for setting, value in inherited_settings.items():
         assert f"{setting} = {value}" in xcconfig, setting
         assert f"{setting} =" not in xcode_project, setting

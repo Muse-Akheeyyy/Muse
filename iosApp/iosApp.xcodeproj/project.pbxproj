@@ -150,11 +150,11 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/MetrolistVersion.h",
+				"$(DERIVED_FILE_DIR)/MuseVersion.h",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\ncd \"$SRCROOT/..\"\nbash scripts/ios_version.sh \"$DERIVED_FILE_DIR/MetrolistVersion.h\"\n./gradlew :shared:embedAndSignAppleFrameworkForXcode\n";
+			shellScript = "set -e\ncd \"$SRCROOT/..\"\nbash scripts/ios_version.sh \"$DERIVED_FILE_DIR/MuseVersion.h\"\n./gradlew :shared:embedAndSignAppleFrameworkForXcode\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
