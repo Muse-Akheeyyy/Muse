@@ -1,6 +1,6 @@
 # Third-Party Notices
 
-Metrolist also adapts Nucleus's macOS AWT C stubs, encoding binding, library-path setup,
+Muse also adapts Nucleus's macOS AWT C stubs, encoding binding, library-path setup,
 deployment-target handling and dylib packaging from commit
 `67e9920f171a6d569e520d95b53c8e594b44a4d4`. Copyright 2026 Elie Gambache.
 These adaptations use the retained [MIT license](LICENSE). See [README.md](README.md)

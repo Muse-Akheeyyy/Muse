@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=Metrolist
+Name=Muse
 Comment=Stream and manage your YouTube Music library
 Exec=com.metrolist.desktop %u
 Icon=com.metrolist.desktop

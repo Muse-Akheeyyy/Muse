@@ -1,15 +1,14 @@
 # Install on Windows
 
-## Requirements and download
+## Requirements and build
 
-Use Windows 10 or later on x64. Choose the stable installer when available, or the portable ZIP, through [the download channels](README.md#get-the-package). The x64 package is a native executable that needs no Java; the ARM64 package includes Java. Login requires Microsoft Edge WebView2 Runtime.
+Use Windows 10 or later on x64. Muse publishes Android packages only, so build the desktop app from source and package it locally with the installer or portable ZIP tasks. The x64 package is a native executable that needs no Java; the ARM64 package includes Java. Login requires Microsoft Edge WebView2 Runtime.
 
 ## Install and verify
 
-1. [Verify the checksum](README.md#verify-a-download).
-2. Run the installer, or extract the complete portable ZIP to a writable directory.
-3. Launch Metrolist and check playback and login.
-4. Restart and confirm that saved credentials return.
+1. Run the installer, or extract the complete portable ZIP to a writable directory.
+2. Launch Muse and check playback and login.
+3. Restart and confirm that saved credentials return.
 
 Keep the extracted runtime and helper files with the executable. A portable ZIP does not register an installed application or Start Menu entry.
 

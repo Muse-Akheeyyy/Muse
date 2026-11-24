@@ -61,7 +61,7 @@ The root flake reads the committed `packaging/release.json`, so `nix run github:
 
 ## Flatpak
 
-Metrolist is distributed as a Flatpak only through [flatpark](https://github.com/flatpark/flatpark), which repackages the release AppImage as `com.metrolist.desktop` and diffs its permissions against [our source manifest](../flatpak/com.metrolist.desktop.yaml). Keep that manifest's path, app ID and permissions current. Metrolist is not submitted to Flathub.
+Muse publishes no Flatpak. [flatpark](https://github.com/flatpark/flatpark) repackages the upstream release AppImage as `com.metrolist.desktop` and diffs its permissions against [the source manifest](../flatpak/com.metrolist.desktop.yaml). Keep that manifest's path, app ID and permissions current if the recipe is ever reused. Muse is not submitted to Flathub.
 
 Upstream's `flatpark` job runs [flatpark/publish-action](https://github.com/flatpark/publish-action) after publication, so flatpark picks up the release within minutes instead of at its twice-daily sweep. Muse does not run this job. It needs no secret.
 
