@@ -1,8 +1,12 @@
 # Distribution packaging
 
+Muse publishes Android APKs only. `release.yml` has no distribution, WinGet, Homebrew or
+Flatpak job, so this fork generates no recipes; the packaging paths below stay as
+reference for the upstream desktop build.
+
 ## Generate recipes
 
-`release.yml` generates recipes after stable publication. The asset names and checksums come from the published release, not a latest-version placeholder. Run locally with an authenticated GitHub CLI and an existing stable `tag`:
+Upstream's `release.yml` generates recipes after stable publication. The asset names and checksums come from the published release, not a latest-version placeholder. Run locally with an authenticated GitHub CLI and an existing stable `tag`:
 
 ```sh
 mkdir -p build
@@ -26,13 +30,13 @@ The workflow keeps `distribution-recipes` for 30 days. Cleanup removes only inte
 
 Run `winget validate --manifest PATH` on Windows, then test clean install, upgrade and uninstall before submission. Do not request elevation or purge user data.
 
-After each stable release, the `winget` job in `release.yml` runs [winget-releaser](https://github.com/vedantmgoyal9/winget-releaser), which copies the previous version's manifests from `microsoft/winget-pkgs`, points them at the new installer and opens the upstream PR from the `MetrolistGroup/winget-pkgs` fork. It needs the `WINGET_TOKEN` secret, a classic PAT with `public_repo` and `workflow` scopes, and skips without it. Keep these templates in step with the published manifests, because the generator still renders them for review.
+After each stable release, upstream's `winget` job runs [winget-releaser](https://github.com/vedantmgoyal9/winget-releaser), which copies the previous version's manifests from `microsoft/winget-pkgs`, points them at the new installer and opens the upstream PR from the `MetrolistGroup/winget-pkgs` fork. Muse does not run this job. It needs the `WINGET_TOKEN` secret, a classic PAT with `public_repo` and `workflow` scopes, and skips without it. Keep these templates in step with the published manifests, because the generator still renders them for review.
 
 ## Homebrew
 
 [MetrolistGroup/homebrew-tap](https://github.com/MetrolistGroup/homebrew-tap) publishes the `metrolist` cask and formula for macOS and Linux. The cask installs the DMG on macOS and the AppImage on Linux. The formula adds a `metrolist` command. On Linux it unpacks the release AppImage, and on macOS it installs the app from the DMG. Its scheduled workflow points both at the latest stable release using the release's `SHA256SUMS`, then runs `brew style`, `brew audit` and an install of each on macOS and Linux, so no release token is needed. Asset names and `SHA256SUMS` entries for the DMGs and AppImages must stay stable for it. `packaging/homebrew/metrolist.rb.in` remains the generator's cask template; keep it in step with the tap. Preserve Gatekeeper and user data.
 
-The `homebrew` job in `release.yml` sends a `metrolist-release` repository dispatch to the tap so it updates right after publication instead of at the next poll. It needs the `HOMEBREW_TAP_TOKEN` secret, a fine-grained token with Contents write access to the tap, and skips without it.
+Upstream's `homebrew` job sends a `metrolist-release` repository dispatch to the tap so it updates right after publication instead of at the next poll. Muse does not run this job. It needs the `HOMEBREW_TAP_TOKEN` secret, a fine-grained token with Contents write access to the tap, and skips without it.
 
 Run `brew style --cask PATH` and `brew audit --cask --online TOKEN` in the tap. Test both architectures and follow [unsigned-app installation](install/macos.md#install-and-verify).
 
@@ -59,7 +63,7 @@ The root flake reads the committed `packaging/release.json`, so `nix run github:
 
 Metrolist is distributed as a Flatpak only through [flatpark](https://github.com/flatpark/flatpark), which repackages the release AppImage as `com.metrolist.desktop` and diffs its permissions against [our source manifest](../flatpak/com.metrolist.desktop.yaml). Keep that manifest's path, app ID and permissions current. Metrolist is not submitted to Flathub.
 
-The `flatpark` job in `release.yml` runs [flatpark/publish-action](https://github.com/flatpark/publish-action) after publication, so flatpark picks up the release within minutes instead of at its twice-daily sweep. It needs no secret.
+Upstream's `flatpark` job runs [flatpark/publish-action](https://github.com/flatpark/publish-action) after publication, so flatpark picks up the release within minutes instead of at its twice-daily sweep. Muse does not run this job. It needs no secret.
 
 The source manifest builds the committed `main` branch of the local checkout with Gradle and network access (`make flatpak-bundle`). Its JDK module stays unstripped because jlink rejects modified JDK libraries. It uses GNOME 51, matching flatpark.
 

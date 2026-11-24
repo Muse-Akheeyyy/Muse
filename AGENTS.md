@@ -18,6 +18,13 @@ Metrolist is a YouTube Music client for Android, desktop and iOS.
 - Match existing code style; comment only non-obvious logic
 - Do **not** use hardcoded English (`"en"`) or country (`"US"`) defaults. Always derive locale from system locale, user settings, or resource directories. Never silently fall back to English.
 
+## Releases
+
+Android releases are published by GitHub Actions from `v*.*.*` tags: bump `appVersion` and
+`versionCode`, add a `---vX.Y.Z` changelog entry, push `main`, push the tag. Read
+[releasing](docs/releasing.md) before release work. Do not upload locally built APKs to a
+release; the CI build is the artifact users install.
+
 ## Rejected features
 
 Do not propose or implement these additions:
