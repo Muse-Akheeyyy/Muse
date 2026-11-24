@@ -3,13 +3,11 @@
 package io.github.museakheeyyy.muse.android.ui.screens.settings
 
 import android.Manifest
-import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.icu.text.RelativeDateTimeFormatter
 import android.os.Build
 import android.provider.Settings
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -54,7 +52,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import io.github.museakheeyyy.muse.android.LocalMiniPlayerBottomInset
@@ -97,7 +94,7 @@ import io.github.museakheeyyy.muse.shared.generated.resources.crash_updates_vers
 import io.github.museakheeyyy.muse.shared.generated.resources.general
 import io.github.museakheeyyy.muse.shared.generated.resources.settings_notification_access_summary
 import io.github.museakheeyyy.muse.shared.generated.resources.settings_release_overview
-import io.github.museakheeyyy.muse.shared.generated.resources.settings_share_apk_summary
+import io.github.museakheeyyy.muse.shared.generated.resources.settings_share_site_summary
 import io.github.museakheeyyy.muse.shared.generated.resources.update_pending
 import io.github.museakheeyyy.muse.shared.generated.resources.updates_auto_check
 import io.github.museakheeyyy.muse.shared.generated.resources.updates_changelog
@@ -123,9 +120,8 @@ import io.github.museakheeyyy.muse.shared.generated.resources.updates_pending_ti
 import io.github.museakheeyyy.muse.shared.generated.resources.updates_release_date_age
 import io.github.museakheeyyy.muse.shared.generated.resources.updates_release_unavailable
 import io.github.museakheeyyy.muse.shared.generated.resources.updates_retry
-import io.github.museakheeyyy.muse.shared.generated.resources.updates_share_apk
-import io.github.museakheeyyy.muse.shared.generated.resources.updates_share_apk_error
 import io.github.museakheeyyy.muse.shared.generated.resources.updates_share_app
+import io.github.museakheeyyy.muse.shared.generated.resources.updates_share_site
 import io.github.museakheeyyy.muse.shared.generated.resources.updates_size
 import io.github.museakheeyyy.muse.shared.generated.resources.updates_status_current
 import io.github.museakheeyyy.muse.shared.generated.resources.updates_title
@@ -140,15 +136,11 @@ import io.github.museakheeyyy.muse.shared.update.UPDATE_CHANNEL_NIGHTLY
 import io.github.museakheeyyy.muse.shared.update.UPDATE_CHANNEL_STABLE
 import io.github.museakheeyyy.muse.shared.update.followsNightlyUpdates
 import io.github.museakheeyyy.muse.shared.utils.FileSizeUnits
+import io.github.museakheeyyy.muse.shared.utils.ShareUrls
 import io.github.museakheeyyy.muse.shared.utils.formatFileSize
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
-import java.io.File
 import java.text.DateFormat
 import java.time.Instant
 import java.util.Date
@@ -163,7 +155,7 @@ fun UpdatesScreen(
     val state by AppUpdateManager.state.collectAsState()
     val releases by AppUpdateManager.releases.collectAsState()
     val scope = rememberCoroutineScope()
-    val shareApkError = stringResource(Res.string.updates_share_apk_error)
+    val shareAppTitle = stringResource(Res.string.updates_share_app)
     var expandedRelease by remember { mutableStateOf<GitHubRelease?>(null) }
 
     var notificationsAllowed by remember { mutableStateOf(NotificationManagerCompat.from(context).areNotificationsEnabled()) }
@@ -244,20 +236,17 @@ fun UpdatesScreen(
             items =
                 listOf(
                     SettingsSubScreenItem(
-                        title = stringResource(Res.string.updates_share_apk),
+                        title = stringResource(Res.string.updates_share_site),
                         icon = MetrolistIcons.Outlined.Share,
                         onClick = {
-                            scope.launch {
-                                try {
-                                    shareInstalledApk(context)
-                                } catch (error: CancellationException) {
-                                    throw error
-                                } catch (_: Exception) {
-                                    Toast.makeText(context, shareApkError, Toast.LENGTH_SHORT).show()
+                            val sendIntent =
+                                Intent(Intent.ACTION_SEND).apply {
+                                    type = "text/plain"
+                                    putExtra(Intent.EXTRA_TEXT, ShareUrls.SITE)
                                 }
-                            }
+                            context.startActivity(Intent.createChooser(sendIntent, shareAppTitle))
                         },
-                        description = stringResource(Res.string.settings_share_apk_summary),
+                        description = stringResource(Res.string.settings_share_site_summary),
                     ),
                 ),
         )
@@ -297,39 +286,6 @@ fun UpdatesScreen(
         ReleaseNotesSheet(release = release, onDismiss = { expandedRelease = null })
     }
 }
-
-private suspend fun shareInstalledApk(context: Context) {
-    val shareTitle = getString(Res.string.updates_share_apk)
-    val apkUri =
-        withContext(Dispatchers.IO) {
-            val sourceApk = File(context.applicationInfo.sourceDir)
-            check(sourceApk.isFile) { "Installed APK is unavailable" }
-            val directory = File(context.cacheDir, "shared_apks").apply { mkdirs() }
-            val now = System.currentTimeMillis()
-            directory
-                .listFiles()
-                ?.filter { it.name.startsWith("metrolist-") && now - it.lastModified() > APK_SHARE_CACHE_MAX_AGE_MS }
-                ?.forEach(File::delete)
-            val destination = File.createTempFile("metrolist-", ".apk", directory)
-            try {
-                sourceApk.copyTo(destination, overwrite = true)
-                FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", destination)
-            } catch (error: Exception) {
-                destination.delete()
-                throw error
-            }
-        }
-    val sendIntent =
-        Intent(Intent.ACTION_SEND).apply {
-            type = "application/vnd.android.package-archive"
-            putExtra(Intent.EXTRA_STREAM, apkUri)
-            clipData = ClipData.newUri(context.contentResolver, shareTitle, apkUri)
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
-    context.startActivity(Intent.createChooser(sendIntent, shareTitle))
-}
-
-private const val APK_SHARE_CACHE_MAX_AGE_MS = 24 * 60 * 60 * 1000L
 
 @Composable
 private fun statusItem(

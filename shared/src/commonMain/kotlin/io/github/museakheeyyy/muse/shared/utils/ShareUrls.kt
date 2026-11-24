@@ -1,6 +1,8 @@
 package io.github.museakheeyyy.muse.shared.utils
 
 object ShareUrls {
+    const val SITE = "https://muse-akheeyyy.pages.dev"
+
     private const val MUSIC_DOMAIN = "https://music.youtube.com"
 
     fun song(
@@ -13,9 +15,9 @@ object ShareUrls {
         usePartyParam: Boolean = true,
     ): String =
         if (usePartyParam) {
-            "https://muse-akheeyyy.pages.dev/party?r=$roomCode"
+            "$SITE/party?r=$roomCode"
         } else {
-            "https://muse-akheeyyy.pages.dev/listen?code=$roomCode"
+            "$SITE/listen?code=$roomCode"
         }
 
     fun playlist(playlistId: String): String = "$MUSIC_DOMAIN/playlist?list=${playlistId.removePrefix("VL")}"

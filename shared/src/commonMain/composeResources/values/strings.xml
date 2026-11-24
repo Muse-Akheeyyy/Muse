@@ -1702,10 +1702,8 @@
     <string name="updates_nightly_builds_desc">Get a new build after every change. Nightly builds may be unstable.</string>
     <!-- Translators: Heading for the app sharing section in the update settings. -->
     <string name="updates_share_app">Share app</string>
-    <!-- Translators: Action label to share the installed Android app APK from the update settings. -->
-    <string name="updates_share_apk">Share app APK</string>
-    <!-- Translators: Error shown when the app APK cannot be prepared for sharing. -->
-    <string name="updates_share_apk_error">Could not prepare the app APK for sharing.</string>
+    <!-- Translators: Action label to share the app's website link from the update settings. -->
+    <string name="updates_share_site">Share site link</string>
     <!-- Translators: Option or section label for changelogs in the update settings. -->
     <string name="updates_changelogs">Changelogs</string>
     <!-- Translators: Option or section label for last check in the update settings. -->
@@ -5516,7 +5514,7 @@
     <string name="settings_diagnostic_logs_summary">Read and copy the app's diagnostic log</string>
     <string name="settings_log_directory_summary">Browse saved log files in your file manager</string>
     <string name="settings_check_releases_summary">Check GitHub for a newer Muse release</string>
-    <string name="settings_share_apk_summary">Share the installed app package as a file</string>
+    <string name="settings_share_site_summary">Send the official Muse website link</string>
     <string name="settings_system_font_summary">Use the font supplied by your operating system</string>
     <string name="settings_thumbnail_shape_summary">Choose the shape of artwork in the expanded player</string>
     <string name="settings_audio_quality_summary">Higher quality uses more data and storage</string>
