@@ -1,3 +1,17 @@
+---v1.0.1
+# Muse 1.0.1
+First maintenance release after the Muse launch.
+
+## Highlights
+- Lavender Leap is now the default icon, and the Original and Gradient icons are gone
+- New installs start on the linear wavy seek bar
+- Moods & Genres pages list the Songs shelf last, after playlists, videos and albums
+- Update and share prompts point at the Muse site instead of a raw APK link
+- The About screen shows the new creator portrait
+
+## Notes
+- Existing installs keep their current icon and slider choice
+
 ---v1.0.0
 # First Muse release
 Muse is an independent GPL-3.0 fork of Metrolist, rebuilt under its own application id, package and update channel.
