@@ -25,7 +25,7 @@
 > [!WARNING]
 > <details>
 >   <summary>The use of Muse to access YouTube Music may violate YouTube's Terms of Service.</summary>
->   <p>You use Muse at your own risk and are solely responsible for the consequences. Muse and the Metrolist contributors are not liable for damages, claims or actions against your account.</p>
+>   <p>You use Muse at your own risk and are solely responsible for the consequences. Muse and its contributors are not liable for damages, claims or actions against your account.</p>
 > </details>
 >
 > YouTube Music is region-restricted. If it is unavailable where you are, use a [VPN or proxy in a supported region](https://one.one.one.one/).
@@ -76,7 +76,7 @@ Releases come from GitHub Actions: a `v*` tag builds, signs and publishes `Muse.
 
 <div align="center">
 <sub>
-Muse is an independent <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPL-3.0</a> fork of <a href="https://github.com/MetrolistGroup/Metrolist">Metrolist</a>, maintained by <a href="https://muse-akheeyyy.pages.dev">Akhil TG</a>.<br/>
-Not affiliated with YouTube, Google LLC or MetroList MLS.
+Muse is <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPL-3.0</a> free software, maintained by <a href="https://muse-akheeyyy.pages.dev">Akhil TG</a>.<br/>
+Not affiliated with YouTube or Google LLC.
 </sub>
 </div>
