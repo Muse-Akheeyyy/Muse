@@ -1,0 +1,19 @@
+package io.github.museakheeyyy.muse.android.ui
+
+import io.github.museakheeyyy.muse.shared.youtube.playback.PlaybackNetworkState
+import io.github.museakheeyyy.muse.shared.youtube.playback.PlaybackNetworkStateStore
+
+object PlaybackNetworkStateAdapter {
+    @Volatile
+    var latest: PlaybackNetworkState = PlaybackNetworkState(scope = "", connected = true)
+        private set
+
+    fun publish(
+        scope: String,
+        connected: Boolean,
+        isCellular: Boolean = false,
+    ) {
+        latest = PlaybackNetworkState(scope = scope, connected = connected, isCellular = isCellular)
+        PlaybackNetworkStateStore.publish(latest)
+    }
+}
