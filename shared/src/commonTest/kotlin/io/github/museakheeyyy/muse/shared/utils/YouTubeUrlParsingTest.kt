@@ -1,0 +1,208 @@
+package io.github.museakheeyyy.muse.shared.utils
+
+import com.metrolist.innertubex.utils.YouTubeUrlParser
+import com.russhwolf.settings.MapSettings
+import io.github.museakheeyyy.muse.shared.listentogether.parseListenTogetherInvitation
+import io.github.museakheeyyy.muse.shared.settings.Settings
+import io.github.museakheeyyy.muse.shared.ui.mobile.resolveMobileDeepLink
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertIs
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
+
+class YouTubeUrlParsingTest {
+    private var previousSettings: Settings? = null
+
+    @BeforeTest
+    fun setUp() {
+        previousSettings = Settings.sharedOverrideForTest()
+        Settings.replaceSharedForTest(Settings(MapSettings()))
+    }
+
+    @AfterTest
+    fun tearDown() = Settings.replaceSharedForTest(previousSettings)
+
+    @Test
+    fun wrappedVideoLinksPreserveTargetStartPosition() {
+        val wrapped = "https://muse-akheeyyy.pages.dev/open?url=https%3A%2F%2Fyoutu.be%2FR93xV3v718s%3Ft%3D143s"
+        assertEquals(143_000L, parseYouTubeStartPositionMs(wrapped))
+        assertEquals(143_000L, parseYouTubeStartPositionMs(wrapped.replace("https://muse-akheeyyy.pages.dev/", "muse://")))
+    }
+
+    @Test
+    fun wrapperTimestampDoesNotOverrideTargetTimestamp() {
+        val wrapped = "https://muse-akheeyyy.pages.dev/open?url=https%3A%2F%2Fyoutu.be%2FR93xV3v718s%3Ft%3D143s&t=999"
+        assertEquals(143_000L, parseYouTubeStartPositionMs(wrapped))
+    }
+
+    @Test
+    fun wrappedVideoLinksPreserveTargetFragmentTimestamp() {
+        assertEquals(
+            120_000L,
+            parseYouTubeStartPositionMs("https://muse-akheeyyy.pages.dev/open?url=https%3A%2F%2Fyoutu.be%2FR93xV3v718s%23t%3D2m"),
+        )
+    }
+
+    @Test
+    fun metrolistWatchLinksPreserveFragmentTimestamp() {
+        assertEquals(120_000L, parseYouTubeStartPositionMs("https://muse-akheeyyy.pages.dev/watch?v=R93xV3v718s#t=2m"))
+    }
+
+    @Test
+    fun wrappedNonVideoTargetDoesNotHaveStartPosition() {
+        val url = "https://muse-akheeyyy.pages.dev/open?url=https%3A%2F%2Fexample.org%2Fwatch%3Fv%3DR93xV3v718s%26t%3D143"
+        assertEquals(0L, parseYouTubeStartPositionMs(url))
+    }
+
+    @Test
+    fun podcastBrowseLinksUseValidatedHostsAndDistinctIds() {
+        listOf(
+            "https://music.youtube.com/browse/MPSP_show?si=shared",
+            "muse://browse/MPSP_show",
+            "https://muse-akheeyyy.pages.dev/browse/MPSP_show",
+        ).forEach {
+            assertEquals("MPSP_show", parseYouTubePodcastId(it))
+        }
+        listOf(
+            "https://youtube.com.example/browse/MPSP_show",
+            "https://example.com/browse/MPSP_show",
+            "https://music.youtube.com/browse/MPRE_album",
+            "https://music.youtube.com/browse/MPSP_show/extra",
+            "https://music.youtube.com/browse/MPSP",
+        ).forEach {
+            assertNull(parseYouTubePodcastId(it))
+        }
+    }
+
+    @Test
+    fun parsesWatchUrlWithTimestamp() {
+        val parsed = parseYouTubeUrl("https://www.youtube.com/watch?v=R93xV3v718s&t=143s")
+
+        assertEquals("R93xV3v718s", assertIs<YouTubeUrlParser.ParsedUrl.Video>(parsed).id)
+    }
+
+    @Test
+    fun parsesSupportedTimestampsAndRejectsMalformedOrOverflowingValues() {
+        val url = "https://youtu.be/R93xV3v718s"
+        assertEquals(143_000L, parseYouTubeStartPositionMs("$url?t=143s"))
+        assertEquals(143_000L, parseYouTubeStartPositionMs("$url?start=143"))
+        assertEquals(3_723_000L, parseYouTubeStartPositionMs("$url?t=1h2m3s"))
+        assertEquals(120_000L, parseYouTubeStartPositionMs("$url#t=2m"))
+        for (timestamp in listOf("-1", "bad", "1m2h", "9223372036854775807h", "9223372036854775807")) {
+            assertEquals(0L, parseYouTubeStartPositionMs("$url?t=$timestamp"))
+        }
+        assertEquals(0L, parseYouTubeStartPositionMs("https://example.org/watch?v=R93xV3v718s&t=60"))
+    }
+
+    @Test
+    fun rejectsLookalikeHost() {
+        assertNull(parseYouTubeUrl("https://youtube.com.example/watch?v=R93xV3v718s"))
+    }
+
+    @Test
+    fun parsesMusicWatchUrl() {
+        val parsed = parseYouTubeUrl("https://music.youtube.com/watch?v=R93xV3v718s")
+        assertEquals("R93xV3v718s", assertIs<YouTubeUrlParser.ParsedUrl.Video>(parsed).id)
+    }
+
+    @Test
+    fun parsesMusicPlaylistUrl() {
+        val parsed = parseYouTubeUrl("https://music.youtube.com/playlist?list=PL1234567890abcdef")
+        assertEquals("PL1234567890abcdef", assertIs<YouTubeUrlParser.ParsedUrl.Playlist>(parsed).id)
+    }
+
+    @Test
+    fun parsesMusicChannelUrl() {
+        val parsed = parseYouTubeUrl("https://music.youtube.com/channel/UC1234567890abcdef")
+        assertEquals("UC1234567890abcdef", assertIs<YouTubeUrlParser.ParsedUrl.Artist>(parsed).id)
+    }
+
+    @Test
+    fun parsesMusicAlbumBrowseUrl() {
+        val parsed = parseYouTubeUrl("https://music.youtube.com/browse/MPREb_1234567890")
+        assertEquals("MPREb_1234567890", assertIs<YouTubeUrlParser.ParsedUrl.Album>(parsed).id)
+    }
+
+    @Test
+    fun parsesMusicWatchUrlWithRadioList() {
+        val parsed = parseYouTubeUrl("https://music.youtube.com/watch?v=R93xV3v718s&list=RDAMVMR93xV3v718s")
+        assertEquals("R93xV3v718s", assertIs<YouTubeUrlParser.ParsedUrl.Video>(parsed).id)
+    }
+
+    @Test
+    fun parsesMetrolistCcWatchUrl() {
+        val parsed = parseYouTubeUrl("https://muse-akheeyyy.pages.dev/watch?v=R93xV3v718s")
+        assertEquals("R93xV3v718s", assertIs<YouTubeUrlParser.ParsedUrl.Video>(parsed).id)
+    }
+
+    @Test
+    fun parsesMetrolistCustomScheme() {
+        val parsed = parseYouTubeUrl("muse://watch?v=R93xV3v718s")
+        assertEquals("R93xV3v718s", assertIs<YouTubeUrlParser.ParsedUrl.Video>(parsed).id)
+    }
+
+    @Test
+    fun decodesCustomOpenTargetBeforeParsing() {
+        val target = "https://music.youtube.com/watch?v=R93xV3v718s&t=143s"
+        val encoded = "https%3A%2F%2Fmusic.youtube.com%2Fwatch%3Fv%3DR93xV3v718s%26t%3D143s"
+        for (link in listOf(
+            "muse://open?url=$encoded",
+            "MUSE://OPEN?url=$encoded&source=share",
+            "muse://open?source=share&url=$encoded",
+        )) {
+            assertEquals(target, normalizeMetrolistShareUrl(link), link)
+            assertEquals("R93xV3v718s", assertIs<YouTubeUrlParser.ParsedUrl.Video>(parseYouTubeUrl(link)).id)
+        }
+    }
+
+    @Test
+    fun parsesMetrolistCustomSchemeNineDigitId() {
+        val parsed = parseYouTubeUrl("muse://watch?v=123456789")
+        assertEquals("123456789", assertIs<YouTubeUrlParser.ParsedUrl.Video>(parsed).id)
+    }
+
+    @Test
+    fun extractsListenTogetherRoomCodes() {
+        assertEquals("LISTENTOGETHERID", extractListenTogetherRoomCode("muse://party?r=listentogetherid"))
+        assertEquals("LISTENTOGETHERID", extractListenTogetherRoomCode("https://muse-akheeyyy.pages.dev/party?r=listentogetherid"))
+        assertEquals("ROOM1234", extractListenTogetherRoomCode("muse://party?r=ROOM1234"))
+        assertEquals("ROOM1234", extractListenTogetherRoomCode("muse://listen?code=ROOM1234"))
+        assertEquals("ROOM1234", extractListenTogetherRoomCode("https://muse-akheeyyy.pages.dev/listen?code=ROOM1234"))
+        assertEquals("ROOM1234", extractListenTogetherRoomCode("muse://listen-together/ROOM1234"))
+        assertTrue(isListenTogetherUrl("muse://party?r=listentogetherid"))
+        assertNull(extractListenTogetherRoomCode("https://example.com/party?r=listentogetherid"))
+        assertNull(extractListenTogetherRoomCode("not a url"))
+    }
+
+    @Test
+    fun rejectsPreviewAndLoopbackLinks() {
+        for (host in listOf(
+            "localhost:8080",
+            "127.0.0.1:8080",
+            "feat-redesign2-metrosite.metrolist.workers.dev",
+            "other.metrolist.workers.dev",
+        )) {
+            for (path in listOf(
+                "watch?v=R93xV3v718s",
+                "playlist?list=PL1234567890abcdef",
+                "browse/MPSP_show",
+                "channel/UC1234567890abcdef",
+            )) {
+                val url = "https://$host/$path"
+                assertEquals(url, normalizeMetrolistShareUrl(url))
+                assertNull(parseYouTubeUrl(url), url)
+                assertNull(parseYouTubePodcastId(url), url)
+                assertNull(resolveMobileDeepLink(url), url)
+            }
+            for (path in listOf("party?r=ROOM1234", "listen?code=ROOM1234")) {
+                val url = "https://$host/$path"
+                assertNull(extractListenTogetherRoomCode(url), url)
+                assertNull(parseListenTogetherInvitation(url), url)
+                assertNull(resolveMobileDeepLink(url), url)
+            }
+        }
+    }
+}

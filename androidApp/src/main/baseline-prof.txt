@@ -1,0 +1,33 @@
+# Home scrolling and player gestures, exercised on the low-end benchmark device.
+# AGP expands these source-level rules and R8 rewrites them for the release DEX.
+# Cold start holds the splash screen until App startup, settings, Koin and the theme are ready.
+HSPLio/github/museakheeyyy/muse/android/App**->**(**)**
+HSPLio/github/museakheeyyy/muse/android/MainActivity**->**(**)**
+HSPLio/github/museakheeyyy/muse/android/NavigationRestorationViewModel**->**(**)**
+HSPLio/github/museakheeyyy/muse/android/di/**->**(**)**
+HSPLio/github/museakheeyyy/muse/android/locale/**->**(**)**
+HSPLio/github/museakheeyyy/muse/android/ui/theme/**->**(**)**
+HSPLio/github/museakheeyyy/muse/shared/settings/**->**(**)**
+HSPLio/github/museakheeyyy/muse/shared/ui/theme/**->**(**)**
+HSPLio/github/museakheeyyy/muse/android/ui/MetrolistAppKt**->**(**)**
+HSPLio/github/museakheeyyy/muse/android/ui/screens/HomeScreenKt**->**(**)**
+HSPLio/github/museakheeyyy/muse/shared/ui/screens/HomeContentKt**->**(**)**
+HSPLio/github/museakheeyyy/muse/shared/ui/components/SpeedDialGridKt**->**(**)**
+HSPLio/github/museakheeyyy/muse/android/ui/components/MiniPlayerKt**->**(**)**
+HPLio/github/museakheeyyy/muse/shared/ui/components/BottomSheetKt**->**(**)**
+HPLio/github/museakheeyyy/muse/shared/ui/components/BottomSheetState**->**(**)**
+# The expanded player, queue, progress sliders and lyrics redraw every frame while visible.
+HPLio/github/museakheeyyy/muse/shared/ui/player/**->**(**)**
+HPLio/github/museakheeyyy/muse/android/ui/player/**->**(**)**
+HPLio/github/museakheeyyy/muse/shared/ui/components/sliders/**->**(**)**
+HPLio/github/museakheeyyy/muse/shared/ui/components/lyrics/**->**(**)**
+# Background playback runs these on ExoPlayer's playback thread for hours; keep them out of the interpreter.
+HSPLandroidx/media3/exoplayer/**->**(**)**
+HSPLandroidx/media3/common/**->**(**)**
+HSPLandroidx/media3/decoder/**->**(**)**
+HSPLandroidx/media3/extractor/**->**(**)**
+HSPLandroidx/media3/datasource/**->**(**)**
+HSPLandroidx/media3/session/**->**(**)**
+HSPLio/github/museakheeyyy/muse/android/playback/**->**(**)**
+HSPLio/github/museakheeyyy/muse/shared/playback/**->**(**)**
+HSPLio/github/museakheeyyy/muse/shared/youtube/playback/**->**(**)**
