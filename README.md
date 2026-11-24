@@ -129,16 +129,6 @@ Muse builds on these projects and services.
 
 <br>
 
-<div align="center">
-<h1>Contributors</h1>
-<p>To contribute code, start with the <a href="docs/README.md">developer docs</a>.</p>
-<a href="https://github.com/MetrolistGroup/Metrolist/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=MetrolistGroup/Metrolist" alt="Contributors" />
-</a>
-</div>
-
-<br>
-
 > [!WARNING]
 > <h2>Legal disclaimer</h2>
 > <p>This project is not affiliated with, funded, authorized or endorsed by YouTube, Google LLC, MetroList MLS, or their affiliates and subsidiaries.</p>
