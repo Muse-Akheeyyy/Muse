@@ -1,6 +1,6 @@
 # Agent guide
 
-Metrolist is a YouTube Music client for Android, desktop and iOS.
+Muse is a YouTube Music client for Android, desktop and iOS.
 
 ## One task per PR
 

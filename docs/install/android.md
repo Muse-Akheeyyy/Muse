@@ -2,9 +2,9 @@
 
 ## Requirements and download
 
-Use Android 7 or later, API 24. Download the universal APK through [the project channels](README.md#get-the-package). The release app ID is `com.metrolist.music`, so it updates the original 13.x app in place; debug uses `com.metrolist.music.debug`.
+Use Android 7 or later, API 24. Download the universal APK through [the project channels](README.md#get-the-package). The release app ID is `io.github.museakheeyyy.muse`; debug builds use `io.github.museakheeyyy.muse.debug`. Muse keeps its own app ID and signing identity, so it installs beside other clients instead of updating them.
 
-Metrolist is also listed on [Obtainium](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/MetrolistGroup/Metrolist/), [IzzyOnDroid](https://apt.izzysoft.de/fdroid/index/apk/com.metrolist.music) and [OpenAPK](https://www.openapk.net/metrolist/com.metrolist.music/). The [nightly prerelease](https://github.com/MetrolistGroup/Metrolist/releases/tag/nightly) ships `Metrolist.apk` built from `main` and may be unstable.
+[Obtainium](https://github.com/ImranR98/Obtainium) can track the [Muse releases page](https://github.com/Muse-Akheeyyy/Muse/releases) for updates. Muse is not on IzzyOnDroid, OpenAPK or the Play Store.
 
 ## Install and verify
 

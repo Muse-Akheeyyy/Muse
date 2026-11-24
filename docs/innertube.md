@@ -13,7 +13,7 @@ These flags do not alter hosted pins. QuackJS handles signature and throttling t
 
 ## Pagination
 
-App callers use `shared/src/commonMain/kotlin/com/metrolist/shared/api/YouTubeRepository.kt`.
+App callers use `shared/src/commonMain/kotlin/io/github/museakheeyyy/muse/shared/api/YouTubeRepository.kt`.
 
 - Playlist page flows are cold and emit deltas without prefetch. `first()` must not request continuations. Resume from the saved cursor and preserve duplicates by song ID plus playlist occurrence ID.
 - Generated mix continuations have no final page. Whole-playlist actions use the loaded pages as a finite snapshot, and a cache refresh replaces the previous batch. Normal playlists and albums still load every page.
@@ -99,7 +99,7 @@ Stream resolution uses the same rule for Android HLS responses. Extracted stream
 
 ## Live tests
 
-`Live*` tests under `shared/src/desktopTest/kotlin/com/metrolist/shared/youtube/innertube/` contact YouTube. They require explicit opt-in and never run in CI. Supply `INNERTUBE_TOKEN_BASE64` through the environment or untracked `local.properties` for signed-in probes. Never commit credentials or unsanitized traces.
+`Live*` tests under `shared/src/desktopTest/kotlin/io/github/museakheeyyy/muse/shared/youtube/innertube/` contact YouTube. They require explicit opt-in and never run in CI. Supply `INNERTUBE_TOKEN_BASE64` through the environment or untracked `local.properties` for signed-in probes. Never commit credentials or unsanitized traces.
 
 Run `./gradlew :shared:desktopTest --tests '*<suite>' <flags>`.
 
