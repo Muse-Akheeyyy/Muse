@@ -1,3 +1,10 @@
+---v1.0.2
+# Muse 1.0.2
+Second maintenance release.
+
+## Highlights
+- The creator portrait on the About screen is centred in its avatar shape
+
 ---v1.0.1
 # Muse 1.0.1
 First maintenance release after the Muse launch.
