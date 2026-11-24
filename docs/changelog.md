@@ -1,3 +1,10 @@
+---v1.0.3
+# Muse 1.0.3
+Third maintenance release.
+
+## Highlights
+- The About screen uses the new creator portrait
+
 ---v1.0.2
 # Muse 1.0.2
 Second maintenance release.
