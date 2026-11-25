@@ -1,5 +1,8 @@
 package io.github.museakheeyyy.muse.shared.playback.ffmpeg
 
+import io.github.museakheeyyy.muse.shared.playback.opus.OpusMp4Remuxer
+import io.github.museakheeyyy.muse.shared.storage.FRAGMENTED_MP4_HEADER_BYTES
+import io.github.museakheeyyy.muse.shared.storage.hasOpusMp4SampleEntry
 import com.sun.net.httpserver.HttpServer
 import org.junit.Test
 import java.net.InetSocketAddress
@@ -17,6 +20,20 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class AudioDecoderTest {
+    @Test
+    fun detectsRemuxedOpusInCacheHeadersWithoutRejectingAac() {
+        val opus = javaClass.getResourceAsStream("/ffmpeg/opus-251.webm")!!.use { OpusMp4Remuxer.remux(it.readBytes()) }
+        // Sample tables can extend past the prefix read during cache lookup.
+        assertTrue(hasOpusMp4SampleEntry(opus.copyOfRange(0, 1024)))
+        assertTrue(hasOpusMp4SampleEntry(opus))
+        val aac = javaClass.getResourceAsStream("/ffmpeg/aac-140.m4a")!!.use { it.readNBytes(FRAGMENTED_MP4_HEADER_BYTES) }
+        assertFalse(hasOpusMp4SampleEntry(aac))
+        assertFalse(hasOpusMp4SampleEntry(aac + "Opus".encodeToByteArray()))
+        for (size in listOf(0, 1, 8, 32, 128)) {
+            assertFalse(hasOpusMp4SampleEntry(opus.copyOfRange(0, size)))
+        }
+    }
+
     @Test(timeout = 30_000)
     fun releaseWaitsForTheGrabbedFrameConsumer() {
         val grabbed = CountDownLatch(1)

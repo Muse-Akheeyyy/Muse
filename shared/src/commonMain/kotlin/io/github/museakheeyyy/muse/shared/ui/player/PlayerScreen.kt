@@ -205,6 +205,7 @@ import io.github.museakheeyyy.muse.shared.ui.components.PlayerMenuAction
 import io.github.museakheeyyy.muse.shared.ui.components.PlayerPrimaryControls
 import io.github.museakheeyyy.muse.shared.ui.components.PopupVisibility
 import io.github.museakheeyyy.muse.shared.ui.components.SleepTimerDialog
+import io.github.museakheeyyy.muse.shared.ui.components.TopRoundedSurfaceShape
 import io.github.museakheeyyy.muse.shared.ui.components.VintageAudioVideoModeSwitcher
 import io.github.museakheeyyy.muse.shared.ui.components.VintageClassicActionButtons
 import io.github.museakheeyyy.muse.shared.ui.components.VintageClassicBottomBar
@@ -2397,7 +2398,7 @@ fun PlayerScreen(
                                 Surface(
                                     modifier =
                                         Modifier.fillMaxSize().blockInput(!queueSheetState.acceptsInput),
-                                    shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+                                    shape = TopRoundedSurfaceShape(28.dp),
                                     color = MaterialTheme.colorScheme.surfaceContainerLow,
                                 ) {
                                     Column(modifier = Modifier.fillMaxSize().sheetBackContent()) {

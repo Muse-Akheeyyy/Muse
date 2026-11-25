@@ -35,7 +35,8 @@ import io.github.kdroidfilter.webview.web.rememberWebViewState
 import io.github.museakheeyyy.muse.desktop.ui.components.WebViewAvailabilityLoading
 import io.github.museakheeyyy.muse.desktop.ui.components.WebViewUnavailableContent
 import io.github.museakheeyyy.muse.desktop.ui.components.rememberLinuxWebKitAvailable
-import io.github.museakheeyyy.muse.desktop.web.DesktopWebView
+import io.github.museakheeyyy.muse.desktop.web.DesktopBrowser
+import io.github.museakheeyyy.muse.desktop.web.rememberDesktopBrowser
 import io.github.museakheeyyy.muse.shared.generated.resources.Res
 import io.github.museakheeyyy.muse.shared.generated.resources.cancel
 import io.github.museakheeyyy.muse.shared.generated.resources.import_error_generic
@@ -52,11 +53,11 @@ internal fun <T : Any> ProviderLoginDialog(
     loginUrl: String,
     signInHint: String,
     onDismissRequest: () -> Unit,
-    extractCredentials: suspend (WebViewState) -> T?,
+    extractCredentials: suspend (DesktopBrowser) -> T?,
     onAuthenticated: (T) -> Unit,
 ) {
     ProviderLoginWindow(title, onDismissRequest) {
-        val webKitAvailable = rememberLinuxWebKitAvailable()
+        val webKitAvailable = rememberLinuxWebKitAvailable(waylandHostSupported = true)
         if (webKitAvailable == null) {
             WebViewAvailabilityLoading()
         } else if (!webKitAvailable && !OsUtil.isWindows && !OsUtil.isMac) {
@@ -82,22 +83,18 @@ private fun <T : Any> ProviderLoginContent(
     loginUrl: String,
     signInHint: String,
     onDismissRequest: () -> Unit,
-    extractCredentials: suspend (WebViewState) -> T?,
+    extractCredentials: suspend (DesktopBrowser) -> T?,
     onAuthenticated: (T) -> Unit,
 ) {
-    val webViewState =
-        rememberWebViewState(loginUrl).apply {
-            webSettings.customUserAgentString = buildProviderBrowserUserAgent()
-        }
-    val navigator = rememberWebViewNavigator()
+    val browser = rememberDesktopBrowser(initialUrl = loginUrl, userAgent = buildProviderBrowserUserAgent())
     val currentExtractor by rememberUpdatedState(extractCredentials)
     val currentOnAuthenticated by rememberUpdatedState(onAuthenticated)
     var extractionFailed by remember { mutableStateOf(false) }
 
-    LaunchedEffect(webViewState) {
+    LaunchedEffect(browser) {
         awaitProviderCredentials {
             try {
-                currentExtractor(webViewState).also { extractionFailed = false }
+                currentExtractor(browser).also { extractionFailed = false }
             } catch (error: CancellationException) {
                 throw error
             } catch (_: Exception) {
@@ -110,14 +107,10 @@ private fun <T : Any> ProviderLoginContent(
     }
 
     Column(Modifier.fillMaxSize()) {
-        if (webViewState.loadingState is LoadingState.Loading) {
+        if (browser.isLoading) {
             LinearWavyProgressIndicator(modifier = Modifier.fillMaxWidth())
         }
-        DesktopWebView(
-            state = webViewState,
-            navigator = navigator,
-            modifier = Modifier.fillMaxWidth().weight(1f),
-        )
+        browser.Content(Modifier.fillMaxWidth().weight(1f))
         Surface(
             modifier = Modifier.fillMaxWidth(),
             tonalElevation = 3.dp,

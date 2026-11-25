@@ -58,7 +58,9 @@ import io.github.museakheeyyy.muse.android.LocalMiniPlayerBottomInset
 import io.github.museakheeyyy.muse.android.update.AppUpdateManager
 import io.github.museakheeyyy.muse.android.update.AppUpdateState
 import io.github.museakheeyyy.muse.android.update.GitHubRelease
+import io.github.museakheeyyy.muse.android.update.PrivilegedAccess
 import io.github.museakheeyyy.muse.android.update.UpdateFailure
+import io.github.museakheeyyy.muse.android.update.UpdateInstallMethod
 import io.github.museakheeyyy.muse.android.update.formatReleaseAge
 import io.github.museakheeyyy.muse.shared.generated.resources.Res
 import io.github.museakheeyyy.muse.shared.generated.resources.action_download
@@ -97,6 +99,8 @@ import io.github.museakheeyyy.muse.shared.generated.resources.settings_release_o
 import io.github.museakheeyyy.muse.shared.generated.resources.settings_share_site_summary
 import io.github.museakheeyyy.muse.shared.generated.resources.update_pending
 import io.github.museakheeyyy.muse.shared.generated.resources.updates_auto_check
+import io.github.museakheeyyy.muse.shared.generated.resources.updates_auto_install
+import io.github.museakheeyyy.muse.shared.generated.resources.updates_auto_install_desc
 import io.github.museakheeyyy.muse.shared.generated.resources.updates_changelog
 import io.github.museakheeyyy.muse.shared.generated.resources.updates_changelogs
 import io.github.museakheeyyy.muse.shared.generated.resources.updates_check
@@ -107,6 +111,11 @@ import io.github.museakheeyyy.muse.shared.generated.resources.updates_download_f
 import io.github.museakheeyyy.muse.shared.generated.resources.updates_error
 import io.github.museakheeyyy.muse.shared.generated.resources.updates_force_install
 import io.github.museakheeyyy.muse.shared.generated.resources.updates_install
+import io.github.museakheeyyy.muse.shared.generated.resources.updates_install_method
+import io.github.museakheeyyy.muse.shared.generated.resources.updates_install_method_desc
+import io.github.museakheeyyy.muse.shared.generated.resources.updates_install_method_root
+import io.github.museakheeyyy.muse.shared.generated.resources.updates_install_method_shizuku
+import io.github.museakheeyyy.muse.shared.generated.resources.updates_install_method_system
 import io.github.museakheeyyy.muse.shared.generated.resources.updates_installer_failed
 import io.github.museakheeyyy.muse.shared.generated.resources.updates_installing_description
 import io.github.museakheeyyy.muse.shared.generated.resources.updates_installing_title
@@ -120,8 +129,13 @@ import io.github.museakheeyyy.muse.shared.generated.resources.updates_pending_ti
 import io.github.museakheeyyy.muse.shared.generated.resources.updates_release_date_age
 import io.github.museakheeyyy.muse.shared.generated.resources.updates_release_unavailable
 import io.github.museakheeyyy.muse.shared.generated.resources.updates_retry
+import io.github.museakheeyyy.muse.shared.generated.resources.updates_root_unavailable
+import io.github.museakheeyyy.muse.shared.generated.resources.updates_share_apk
+import io.github.museakheeyyy.muse.shared.generated.resources.updates_share_apk_error
 import io.github.museakheeyyy.muse.shared.generated.resources.updates_share_app
 import io.github.museakheeyyy.muse.shared.generated.resources.updates_share_site
+import io.github.museakheeyyy.muse.shared.generated.resources.updates_shizuku_denied
+import io.github.museakheeyyy.muse.shared.generated.resources.updates_shizuku_unavailable
 import io.github.museakheeyyy.muse.shared.generated.resources.updates_size
 import io.github.museakheeyyy.muse.shared.generated.resources.updates_status_current
 import io.github.museakheeyyy.muse.shared.generated.resources.updates_title
@@ -159,10 +173,17 @@ fun UpdatesScreen(
     var expandedRelease by remember { mutableStateOf<GitHubRelease?>(null) }
 
     var notificationsAllowed by remember { mutableStateOf(NotificationManagerCompat.from(context).areNotificationsEnabled()) }
+    var installMethod by remember { mutableStateOf(AppUpdateManager.installMethod()) }
+    var autoInstall by remember { mutableStateOf(AppSettings.shared.autoInstallUpdates) }
+    var canAutoInstall by remember { mutableStateOf(AppUpdateManager.canInstallWithoutPrompt(context)) }
     LifecycleResumeEffect(context) {
         notificationsAllowed = NotificationManagerCompat.from(context).areNotificationsEnabled()
+        canAutoInstall = AppUpdateManager.canInstallWithoutPrompt(context)
         onPauseOrDispose { }
     }
+    val rootDenied = stringResource(Res.string.updates_root_unavailable)
+    val shizukuMissing = stringResource(Res.string.updates_shizuku_unavailable)
+    val shizukuDenied = stringResource(Res.string.updates_shizuku_denied)
 
     val notificationPermissionLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
@@ -204,6 +225,51 @@ fun UpdatesScreen(
                             AppSettings.shared.updateChannel = if (enabled) UPDATE_CHANNEL_NIGHTLY else UPDATE_CHANNEL_STABLE
                             nightlyBuilds = enabled
                             scope.launch { AppUpdateManager.check(context) }
+                        },
+                    ),
+                    listChooserSettingsItem(
+                        title = stringResource(Res.string.updates_install_method),
+                        description = stringResource(Res.string.updates_install_method_desc),
+                        options = UpdateInstallMethod.entries,
+                        selectedOption = installMethod,
+                        optionToString = { method ->
+                            stringResource(
+                                when (method) {
+                                    UpdateInstallMethod.SYSTEM -> Res.string.updates_install_method_system
+                                    UpdateInstallMethod.ROOT -> Res.string.updates_install_method_root
+                                    UpdateInstallMethod.SHIZUKU -> Res.string.updates_install_method_shizuku
+                                },
+                            )
+                        },
+                        onOptionSelected = { method ->
+                            scope.launch {
+                                when (AppUpdateManager.selectInstallMethod(context, method)) {
+                                    PrivilegedAccess.GRANTED -> {
+                                        installMethod = method
+                                    }
+
+                                    PrivilegedAccess.UNAVAILABLE -> {
+                                        Toast.makeText(context, shizukuMissing, Toast.LENGTH_SHORT).show()
+                                    }
+
+                                    PrivilegedAccess.DENIED -> {
+                                        val message = if (method == UpdateInstallMethod.ROOT) rootDenied else shizukuDenied
+                                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                                canAutoInstall = AppUpdateManager.canInstallWithoutPrompt(context)
+                            }
+                        },
+                    ),
+                    switchSettingsItem(
+                        title = stringResource(Res.string.updates_auto_install),
+                        description = stringResource(Res.string.updates_auto_install_desc),
+                        wrapTitle = true,
+                        checked = autoInstall && canAutoInstall,
+                        enabled = canAutoInstall,
+                        onCheckedChange = { enabled ->
+                            AppSettings.shared.autoInstallUpdates = enabled
+                            autoInstall = enabled
                         },
                     ),
                     switchSettingsItem(
@@ -362,7 +428,7 @@ fun UpdateDetailsScreen(
     val installPermissionLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             installAfterPermission?.let { downloaded ->
-                if (AppUpdateManager.canInstallPackages(context)) {
+                if (AppUpdateManager.canInstallPackages(context, crashRecovery)) {
                     scope.launch { installerError = !AppUpdateManager.install(context, downloaded, crashRecovery) }
                     installAfterPermission = null
                 }
@@ -371,7 +437,7 @@ fun UpdateDetailsScreen(
 
     fun install(downloaded: AppUpdateState.Downloaded) {
         installerError = false
-        if (AppUpdateManager.canInstallPackages(context)) {
+        if (AppUpdateManager.canInstallPackages(context, crashRecovery)) {
             scope.launch { installerError = !AppUpdateManager.install(context, downloaded, crashRecovery) }
         } else {
             installAfterPermission = downloaded
@@ -390,7 +456,8 @@ fun UpdateDetailsScreen(
 
     LaunchedEffect(state) {
         val downloaded = state as? AppUpdateState.Downloaded ?: return@LaunchedEffect
-        if (!autoInstallHandled && !downloaded.installing) {
+        // A background download installs only once playback stops, so opening this screen must not install it.
+        if (!autoInstallHandled && !downloaded.installing && !AppUpdateManager.isBackgroundUpdate(downloaded.release)) {
             autoInstallHandled = true
             install(downloaded)
         }

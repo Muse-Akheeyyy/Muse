@@ -56,6 +56,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.isCtrlPressed
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
@@ -70,12 +71,14 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import io.github.museakheeyyy.muse.desktop.deviceconnect.DesktopDeviceConnect
 import io.github.museakheeyyy.muse.desktop.state.app.UiState
 import io.github.museakheeyyy.muse.desktop.state.content.ArtistState
 import io.github.museakheeyyy.muse.desktop.state.content.BrowseState
 import io.github.museakheeyyy.muse.desktop.state.content.PlaylistAlbumState
 import io.github.museakheeyyy.muse.desktop.state.content.SearchState
 import io.github.museakheeyyy.muse.desktop.state.playback.PlayerState
+import io.github.museakheeyyy.muse.desktop.utils.WaylandScale
 import io.github.museakheeyyy.muse.shared.generated.resources.Res
 import io.github.museakheeyyy.muse.shared.generated.resources.clear
 import io.github.museakheeyyy.muse.shared.generated.resources.close_search
@@ -303,6 +306,15 @@ fun FloatingSearchOverlay(
                         .fillMaxWidth()
                         .focusGroup()
                         .onPreviewKeyEvent { event ->
+                            // Native Wayland has no global AWT dispatcher, and this overlay sits outside the shortcut layer.
+                            if (WaylandScale.isNativeWaylandActive() && event.type == KeyEventType.KeyDown && event.isCtrlPressed &&
+                                (event.key == Key.K || event.key == Key.F) &&
+                                DesktopDeviceConnect.manager.state.value.pairingRequests
+                                    .none { it.requiresApproval }
+                            ) {
+                                animateDismiss()
+                                return@onPreviewKeyEvent true
+                            }
                             if (event.type == KeyEventType.KeyDown && (queryFocused || event.key == Key.Escape)) {
                                 when (event.key) {
                                     Key.Escape -> {

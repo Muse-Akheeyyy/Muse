@@ -62,6 +62,7 @@ import androidx.sqlite.driver.AndroidSQLiteDriver
 import io.github.museakheeyyy.muse.android.R
 import io.github.museakheeyyy.muse.android.backup.AutomaticBackupWorker
 import io.github.museakheeyyy.muse.android.backup.BackupRestoreManager
+import io.github.museakheeyyy.muse.android.onboarding.LegacyInstallMigration
 import io.github.museakheeyyy.muse.android.playlistimport.AmazonMusicLoginScreen
 import io.github.museakheeyyy.muse.android.playlistimport.AndroidPlaylistImportTransfer
 import io.github.museakheeyyy.muse.android.playlistimport.AppleMusicLoginScreen
@@ -170,6 +171,10 @@ import io.github.museakheeyyy.muse.shared.generated.resources.import_provider_yo
 import io.github.museakheeyyy.muse.shared.generated.resources.import_review_playlists
 import io.github.museakheeyyy.muse.shared.generated.resources.import_spotify_account_playlists
 import io.github.museakheeyyy.muse.shared.generated.resources.imported_playlist
+import io.github.museakheeyyy.muse.shared.generated.resources.legacy_recovery_export_desc
+import io.github.museakheeyyy.muse.shared.generated.resources.legacy_recovery_export_failed
+import io.github.museakheeyyy.muse.shared.generated.resources.legacy_recovery_export_success
+import io.github.museakheeyyy.muse.shared.generated.resources.legacy_recovery_export_title
 import io.github.museakheeyyy.muse.shared.generated.resources.liked_songs
 import io.github.museakheeyyy.muse.shared.generated.resources.local_playlist
 import io.github.museakheeyyy.muse.shared.generated.resources.n_song
@@ -462,6 +467,32 @@ fun BackupRestoreScreen(onNavigateBack: () -> Unit) {
                     val result = manager.backup(uri)
                     isBusy = false
                     Toast.makeText(context, if (result.isSuccess) backupSuccess else backupFailed, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+    val recoveryExportSuccess = stringResource(Res.string.legacy_recovery_export_success)
+    val recoveryExportFailed = stringResource(Res.string.legacy_recovery_export_failed)
+    var legacyRecoveryCopy by remember { mutableStateOf<File?>(null) }
+    LaunchedEffect(Unit) {
+        legacyRecoveryCopy = withContext(Dispatchers.IO) { LegacyInstallMigration.latestRecoveryCopy(context) }
+    }
+    val exportRecoveryLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.CreateDocument("application/zip"),
+        ) { uri ->
+            val recovery = legacyRecoveryCopy
+            if (uri != null && recovery != null) {
+                scope.launch {
+                    isBusy = true
+                    val result = manager.exportRecoveryCopy(recovery, uri)
+                    isBusy = false
+                    Toast
+                        .makeText(
+                            context,
+                            if (result.isSuccess) recoveryExportSuccess else recoveryExportFailed,
+                            Toast.LENGTH_SHORT,
+                        ).show()
                 }
             }
         }
@@ -1915,7 +1946,7 @@ fun BackupRestoreScreen(onNavigateBack: () -> Unit) {
         SettingsSubScreenGroup(
             title = stringResource(Res.string.backup_restore_title),
             items =
-                listOf(
+                listOfNotNull(
                     SettingsSubScreenItem(
                         title = stringResource(Res.string.action_backup),
                         description =
@@ -1961,6 +1992,16 @@ fun BackupRestoreScreen(onNavigateBack: () -> Unit) {
                             }
                         },
                     ),
+                    legacyRecoveryCopy?.let {
+                        SettingsSubScreenItem(
+                            title = stringResource(Res.string.legacy_recovery_export_title),
+                            description = stringResource(Res.string.legacy_recovery_export_desc),
+                            enabled = controlsEnabled,
+                            onClick = {
+                                runCatching { exportRecoveryLauncher.launch("${defaultBackupFilename(backupFilenamePrefix)}-v13.zip") }
+                            },
+                        )
+                    },
                     SettingsSubScreenItem(
                         title = stringResource(Res.string.foreign_import_title),
                         description =

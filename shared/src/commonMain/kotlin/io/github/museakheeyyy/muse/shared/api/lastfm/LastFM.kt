@@ -5,7 +5,7 @@ import io.github.museakheeyyy.muse.shared.api.ScrobbleFailureDisposition
 import io.github.museakheeyyy.muse.shared.api.parseRetryAfter
 import io.github.museakheeyyy.muse.shared.api.scrobbleStatusDisposition
 import io.github.museakheeyyy.muse.shared.network.readTextLimited
-import io.github.museakheeyyy.muse.shared.state.GlobalInnerTube
+import io.github.museakheeyyy.muse.shared.state.GlobalYouTube
 import io.github.museakheeyyy.muse.shared.utils.md5Hex
 import io.github.museakheeyyy.muse.shared.youtube.logging.YtLogger
 import io.ktor.client.HttpClient
@@ -590,7 +590,7 @@ object LastFM {
     var renderedPageLoader: (suspend (String) -> String?)? = null
 
     /** The content language as Last.fm's ISO 639 alpha-2 code. */
-    fun contentLanguage(): String = primaryLanguage(GlobalInnerTube.instance.locale.hl)
+    fun contentLanguage(): String = primaryLanguage(GlobalYouTube.contentLocale.hl)
 
     internal fun primaryLanguage(tag: String): String = tag.substringBefore('-').substringBefore('_').lowercase()
 

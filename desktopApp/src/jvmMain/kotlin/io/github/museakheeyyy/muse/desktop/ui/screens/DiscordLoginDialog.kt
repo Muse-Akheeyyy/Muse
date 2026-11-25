@@ -25,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.AwtWindow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.DialogWindow
 import androidx.compose.ui.window.rememberDialogState
 import io.github.kdroidfilter.webview.request.RequestInterceptor
 import io.github.kdroidfilter.webview.request.WebRequest
@@ -40,10 +39,12 @@ import io.github.museakheeyyy.muse.desktop.ui.DesktopDensityProvider
 import io.github.museakheeyyy.muse.desktop.ui.components.WebViewAvailabilityLoading
 import io.github.museakheeyyy.muse.desktop.ui.components.WebViewUnavailableContent
 import io.github.museakheeyyy.muse.desktop.ui.components.rememberLinuxWebKitAvailable
+import io.github.museakheeyyy.muse.desktop.utils.WaylandScale
 import io.github.museakheeyyy.muse.desktop.utils.prepareDesktopWebViewDataDirectory
-import io.github.museakheeyyy.muse.desktop.web.DesktopWebView
 import io.github.museakheeyyy.muse.desktop.web.LinuxWebViewCanvas
+import io.github.museakheeyyy.muse.desktop.web.rememberDesktopBrowser
 import io.github.museakheeyyy.muse.desktop.window.ClearWindowContentOnDispose
+import io.github.museakheeyyy.muse.desktop.window.DesktopDialogWindow
 import io.github.museakheeyyy.muse.shared.discord.DiscordAuthSession
 import io.github.museakheeyyy.muse.shared.discord.DiscordRpcManager
 import io.github.museakheeyyy.muse.shared.generated.resources.Res
@@ -66,6 +67,7 @@ import java.awt.Dimension
 import java.awt.KeyboardFocusManager
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
+import java.io.File
 import javax.swing.JDialog
 import javax.swing.WindowConstants
 import kotlin.math.roundToInt
@@ -122,7 +124,7 @@ private fun EmbeddedDiscordLoginDialog(
             runCatching { prepareDesktopWebViewDataDirectory().absolutePath }
         }
     val coroutineScope = rememberCoroutineScope()
-    val webKitAvailable = rememberLinuxWebKitAvailable()
+    val webKitAvailable = rememberLinuxWebKitAvailable(waylandHostSupported = true)
     val currentOnComplete by rememberUpdatedState(onComplete)
     val currentOnDismissRequest by rememberUpdatedState(onDismissRequest)
     val navigation =
@@ -150,7 +152,7 @@ private fun EmbeddedDiscordLoginDialog(
                 onDismissRequest = { currentOnDismissRequest() },
             )
         }
-    if (OsUtil.isLinux && webKitAvailable == true && webViewDataDirectory.isSuccess) {
+    if (OsUtil.isLinux && !WaylandScale.isNativeWaylandActive() && webKitAvailable == true && webViewDataDirectory.isSuccess) {
         LinuxDiscordLoginWindow(
             session = session,
             dataDirectory = webViewDataDirectory.getOrThrow(),
@@ -160,13 +162,13 @@ private fun EmbeddedDiscordLoginDialog(
         return
     }
 
-    DialogWindow(
+    DesktopDialogWindow(
         onCloseRequest = onDismissRequest,
         title = stringResource(Res.string.sign_in_discord),
         state = rememberDialogState(width = 600.dp, height = 700.dp),
         visible = true,
     ) {
-        ClearWindowContentOnDispose(window)
+        ClearWindowContentOnDispose(awtDialog)
         DesktopDensityProvider {
             if (webKitAvailable == null) {
                 WebViewAvailabilityLoading()
@@ -187,30 +189,16 @@ private fun EmbeddedDiscordLoginDialog(
                 return@DesktopDensityProvider
             }
 
-            val webViewState =
-                rememberWebViewState(session.authorizeUrl).apply {
-                    webSettings.desktopWebSettings.dataDirectory = webViewDataDirectory.getOrNull()
-                    webSettings.customUserAgentString = buildBrowserUserAgent()
-                }
-
-            val navigator =
-                rememberWebViewNavigator(
-                    requestInterceptor =
-                        object : RequestInterceptor {
-                            override fun onInterceptUrlRequest(
-                                request: WebRequest,
-                                navigator: WebViewNavigator,
-                            ): WebRequestInterceptResult =
-                                if (navigation.onNavigate(request.url)) {
-                                    WebRequestInterceptResult.Allow
-                                } else {
-                                    WebRequestInterceptResult.Reject
-                                }
-                        },
+            val browser =
+                rememberDesktopBrowser(
+                    initialUrl = session.authorizeUrl,
+                    userAgent = buildBrowserUserAgent(),
+                    dataDirectory = webViewDataDirectory.getOrNull()?.let(::File),
+                    allowNavigation = navigation::onNavigate,
                 )
 
-            LaunchedEffect(webViewState) {
-                snapshotFlow { webViewState.lastLoadedUrl }
+            LaunchedEffect(browser) {
+                snapshotFlow { browser.currentUrl }
                     .collect { url ->
                         if (url != null) {
                             navigation.onNavigate(url)
@@ -219,11 +207,7 @@ private fun EmbeddedDiscordLoginDialog(
             }
 
             Box(Modifier.fillMaxSize()) {
-                DesktopWebView(
-                    state = webViewState,
-                    navigator = navigator,
-                    modifier = Modifier.fillMaxSize(),
-                )
+                browser.Content(Modifier.fillMaxSize())
             }
         }
     }

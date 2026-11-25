@@ -16,13 +16,13 @@ import io.github.museakheeyyy.muse.desktop.state.content.PodcastState
 import io.github.museakheeyyy.muse.desktop.state.content.SearchState
 import io.github.museakheeyyy.muse.desktop.state.playback.ListenTogetherState
 import io.github.museakheeyyy.muse.desktop.state.playback.PlayerState
+import io.github.museakheeyyy.muse.desktop.window.runOnDesktopUiThread
 import io.github.museakheeyyy.muse.shared.settings.Settings
 import io.github.museakheeyyy.muse.shared.utils.extractListenTogetherRoomCode
 import io.github.museakheeyyy.muse.shared.utils.isListenTogetherUrl
 import io.github.museakheeyyy.muse.shared.utils.parseYouTubePodcastId
 import io.github.museakheeyyy.muse.shared.utils.parseYouTubeUrl
 import java.awt.Desktop
-import java.awt.EventQueue
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
@@ -76,7 +76,7 @@ object DesktopUrlHandler {
             return true
         }
 
-        EventQueue.invokeLater {
+        runOnDesktopUiThread {
             executeOpenUrl(normalized)
         }
         return true

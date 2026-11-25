@@ -95,7 +95,6 @@ import io.github.museakheeyyy.muse.android.utils.startActivitySafely
 import io.github.museakheeyyy.muse.android.viewmodels.LibraryViewModel
 import io.github.museakheeyyy.muse.android.viewmodels.loadOrderedCachedSongs
 import io.github.museakheeyyy.muse.shared.api.playlistSongs
-import io.github.museakheeyyy.muse.shared.constants.ThumbnailCornerRadius
 import io.github.museakheeyyy.muse.shared.db.MusicDatabase
 import io.github.museakheeyyy.muse.shared.db.entities.toSongItem
 import io.github.museakheeyyy.muse.shared.db.isHistoryPlaylistId
@@ -561,7 +560,7 @@ fun LibraryScreen(
                                     Settings.shared.swipeToSong &&
                                     ((item is SongItem && !item.isUnavailable && !isGridView) || searchQuery.isNotBlank()) &&
                                     !isGuestPlaybackLocked,
-                            shape = if (isGridView) gridCellShape() else RoundedCornerShape(ThumbnailCornerRadius),
+                            shape = gridCellShape(),
                             content = content,
                         )
                     } else {

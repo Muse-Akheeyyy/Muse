@@ -6,6 +6,7 @@
 package io.github.museakheeyyy.muse.shared.db
 
 import androidx.room3.ColumnTypeConverter
+import io.github.museakheeyyy.muse.shared.model.AlbumItem
 import io.github.museakheeyyy.muse.shared.model.PlaylistItem
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -22,6 +23,12 @@ class Converters {
 
     @ColumnTypeConverter
     fun playlistHeaderFromJson(value: String?): PlaylistItem? = value?.let { playlistJson.decodeFromString<PlaylistItem>(it) }
+
+    @ColumnTypeConverter
+    fun albumListToJson(albums: List<AlbumItem>?): String? = albums?.let { playlistJson.encodeToString(it) }
+
+    @ColumnTypeConverter
+    fun albumListFromJson(value: String?): List<AlbumItem>? = value?.let { playlistJson.decodeFromString<List<AlbumItem>>(it) }
 
     @ColumnTypeConverter
     fun fromTimestamp(value: Long?): LocalDateTime? =

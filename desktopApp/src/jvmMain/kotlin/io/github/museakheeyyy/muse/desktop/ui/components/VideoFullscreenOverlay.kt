@@ -84,6 +84,7 @@ import io.github.museakheeyyy.muse.desktop.state.content.ArtistState
 import io.github.museakheeyyy.muse.desktop.state.playback.ListenTogetherState
 import io.github.museakheeyyy.muse.desktop.state.playback.LyricsState
 import io.github.museakheeyyy.muse.desktop.state.playback.PlayerState
+import io.github.museakheeyyy.muse.desktop.utils.WaylandScale
 import io.github.museakheeyyy.muse.shared.api.lyrics.LyricsUtils
 import io.github.museakheeyyy.muse.shared.generated.resources.Res
 import io.github.museakheeyyy.muse.shared.generated.resources.close_video_fullscreen
@@ -343,12 +344,16 @@ private fun VideoPlayerArea(
 
     val blankCursor =
         remember {
-            try {
-                val img = BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB)
-                val cursor = Toolkit.getDefaultToolkit().createCustomCursor(img, Point(0, 0), "blank_cursor")
-                PointerIcon(cursor)
-            } catch (_: Exception) {
+            if (WaylandScale.isNativeWaylandActive()) {
                 PointerIcon.Default
+            } else {
+                try {
+                    val img = BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB)
+                    val cursor = Toolkit.getDefaultToolkit().createCustomCursor(img, Point(0, 0), "blank_cursor")
+                    PointerIcon(cursor)
+                } catch (_: Exception) {
+                    PointerIcon.Default
+                }
             }
         }
 

@@ -36,7 +36,7 @@ import io.github.museakheeyyy.muse.desktop.ui.components.WebViewAvailabilityLoad
 import io.github.museakheeyyy.muse.desktop.ui.components.WebViewUnavailableContent
 import io.github.museakheeyyy.muse.desktop.ui.components.rememberLinuxWebKitAvailable
 import io.github.museakheeyyy.muse.desktop.utils.prepareSpotifyWebViewDataDirectory
-import io.github.museakheeyyy.muse.desktop.web.DesktopWebView
+import io.github.museakheeyyy.muse.desktop.web.rememberDesktopBrowser
 import io.github.museakheeyyy.muse.shared.generated.resources.Res
 import io.github.museakheeyyy.muse.shared.generated.resources.cancel
 import io.github.museakheeyyy.muse.shared.generated.resources.close
@@ -73,7 +73,7 @@ internal fun SpotifyLoginDialog(
     onSessionCookie: (String) -> Unit,
 ) {
     ProviderLoginWindow(stringResource(Res.string.spotify_login_title), onDismissRequest) {
-        val webKitAvailable = rememberLinuxWebKitAvailable()
+        val webKitAvailable = rememberLinuxWebKitAvailable(waylandHostSupported = true)
         if (OsUtil.isWindows) {
             SpotifyWindowsHelperContent(isAuthenticating, authenticationFailed, onDismissRequest, onSessionCookie)
         } else if (webKitAvailable == null) {
@@ -109,27 +109,26 @@ private fun SpotifyWebViewContent(
         return
     }
 
-    val webViewState =
-        rememberWebViewState(SPOTIFY_LOGIN_URL).apply {
-            webSettings.desktopWebSettings.dataDirectory = webViewDataDirectory.getOrNull()
-            safariUserAgent()?.let { webSettings.customUserAgentString = it }
-        }
-    val navigator = rememberWebViewNavigator()
+    val browser =
+        rememberDesktopBrowser(
+            initialUrl = SPOTIFY_LOGIN_URL,
+            userAgent = safariUserAgent(),
+            dataDirectory = webViewDataDirectory.getOrNull()?.let(::File),
+        )
     val currentOnSessionCookie by rememberUpdatedState(onSessionCookie)
     var extractionError by remember { mutableStateOf<String?>(null) }
     var credentialAttempt by remember { mutableIntStateOf(0) }
     var isReadingCredentials by remember { mutableStateOf(true) }
     val sessionReadFailed = stringResource(Res.string.spotify_session_read_failed)
 
-    LaunchedEffect(webViewState, credentialAttempt) {
+    LaunchedEffect(browser, credentialAttempt) {
         isReadingCredentials = true
         try {
             val cookie =
                 awaitProviderCredentials {
                     try {
                         val cookies =
-                            webViewState.cookieManager.getCookies(SPOTIFY_OPEN_URL) +
-                                webViewState.cookieManager.getCookies("https://spotify.com")
+                            browser.cookies(SPOTIFY_OPEN_URL) + browser.cookies("https://spotify.com")
                         spotifySessionCookie(cookies.joinToString("; ") { "${it.name}=${it.value}" }).also {
                             extractionError = null
                         }
@@ -147,14 +146,10 @@ private fun SpotifyWebViewContent(
     }
 
     Column(Modifier.fillMaxSize()) {
-        if (webViewState.loadingState is LoadingState.Loading || isAuthenticating) {
+        if (browser.isLoading || isAuthenticating) {
             LinearWavyProgressIndicator(modifier = Modifier.fillMaxWidth())
         }
-        DesktopWebView(
-            state = webViewState,
-            navigator = navigator,
-            modifier = Modifier.fillMaxWidth().weight(1f),
-        )
+        browser.Content(Modifier.fillMaxWidth().weight(1f))
         Surface(
             modifier = Modifier.fillMaxWidth(),
             tonalElevation = 3.dp,

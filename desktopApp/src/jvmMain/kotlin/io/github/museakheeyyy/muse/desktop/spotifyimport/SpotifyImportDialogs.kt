@@ -42,10 +42,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.DialogWindow
 import androidx.compose.ui.window.rememberDialogState
 import io.github.museakheeyyy.muse.desktop.ui.DesktopDensityProvider
 import io.github.museakheeyyy.muse.desktop.window.ClearWindowContentOnDispose
+import io.github.museakheeyyy.muse.desktop.window.DesktopDialogWindow
 import io.github.museakheeyyy.muse.shared.db.entities.PlaylistEntity
 import io.github.museakheeyyy.muse.shared.generated.resources.Res
 import io.github.museakheeyyy.muse.shared.generated.resources.action_import
@@ -89,13 +89,13 @@ internal fun SpotifyPlaylistPickerDialog(
     onReview: () -> Unit,
     onDismissRequest: () -> Unit,
 ) {
-    DialogWindow(
+    DesktopDialogWindow(
         onCloseRequest = onDismissRequest,
         title = title,
         state = rememberDialogState(width = 760.dp, height = 720.dp),
         visible = true,
     ) {
-        ClearWindowContentOnDispose(window)
+        ClearWindowContentOnDispose(awtDialog)
         DesktopDensityProvider {
             Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.surface) {
                 Column(Modifier.fillMaxSize()) {
@@ -240,7 +240,7 @@ internal fun SpotifyPlaylistPreviewDialog(
     onDismissRequest: () -> Unit,
 ) {
     val selectedPlaylist = playlists.firstOrNull { it.uri == selectedUri } ?: playlists.first()
-    DialogWindow(
+    DesktopDialogWindow(
         onCloseRequest = onDismissRequest,
         title =
             pluralStringResource(
@@ -251,7 +251,7 @@ internal fun SpotifyPlaylistPreviewDialog(
         state = rememberDialogState(width = 980.dp, height = 760.dp),
         visible = true,
     ) {
-        ClearWindowContentOnDispose(window)
+        ClearWindowContentOnDispose(awtDialog)
         DesktopDensityProvider {
             Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.surface) {
                 Column(Modifier.fillMaxSize()) {
@@ -432,13 +432,13 @@ internal fun SpotifyDestinationDialog(
     onBack: () -> Unit,
     onDismissRequest: () -> Unit,
 ) {
-    DialogWindow(
+    DesktopDialogWindow(
         onCloseRequest = onDismissRequest,
         title = stringResource(Res.string.spotify_import_choose_destination),
         state = rememberDialogState(width = 620.dp, height = 680.dp),
         visible = true,
     ) {
-        ClearWindowContentOnDispose(window)
+        ClearWindowContentOnDispose(awtDialog)
         DesktopDensityProvider {
             Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.surface) {
                 Column(Modifier.fillMaxSize()) {

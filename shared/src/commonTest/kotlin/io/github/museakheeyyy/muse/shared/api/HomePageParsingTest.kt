@@ -9,7 +9,10 @@ import io.github.museakheeyyy.muse.shared.model.HomeSection
 import io.github.museakheeyyy.muse.shared.model.PlaylistItem
 import io.github.museakheeyyy.muse.shared.model.PodcastItem
 import io.github.museakheeyyy.muse.shared.model.SongItem
+import io.github.museakheeyyy.muse.shared.model.heardInShortsItemIds
 import io.github.museakheeyyy.muse.shared.model.isDesktopHomeDiscoverySection
+import io.github.museakheeyyy.muse.shared.model.isHeardInShortsSection
+import io.github.museakheeyyy.muse.shared.model.isQuickPicksSection
 import io.github.museakheeyyy.muse.shared.model.mergeAndDeduplicateHomeSections
 import io.github.museakheeyyy.muse.shared.settings.Settings
 import io.github.museakheeyyy.muse.shared.viewmodels.HomeViewModel.HomeUiState
@@ -622,6 +625,36 @@ class HomePageParsingTest {
             assertFalse(page.sections.last().isPersonal)
         }
 
+    @Test
+    fun homeIdentifiesHeardInShortsShelvesForQuickPicksExclusion() =
+        runBlocking {
+            val (sections, _) =
+                repository(
+                    HEARD_IN_SHORTS_CONTINUATION_RESPONSE,
+                ).getHomeSectionsContinuation("page-2", loadAllPages = false)
+
+            assertEquals(
+                listOf("Quick picks", "Heard in Shorts", "Shorts에서 들은 음악", "Similar to The Shorts", "Short listens"),
+                sections.map { it.title },
+            )
+            val quickPicks = sections[0]
+            val heardInShorts = sections[1]
+            val localizedShorts = sections[2]
+            val similarArtist = sections[3]
+            val shortListens = sections[4]
+
+            assertFalse(quickPicks.isHeardInShortsSection())
+            assertTrue(heardInShorts.isHeardInShortsSection())
+            assertFalse(heardInShorts.isQuickPicksSection())
+            assertTrue(localizedShorts.isHeardInShortsSection())
+            assertFalse(localizedShorts.isQuickPicksSection())
+            assertFalse(similarArtist.isHeardInShortsSection())
+            assertFalse(shortListens.isHeardInShortsSection())
+            assertEquals(setOf("shorts-shared", "shorts-only", "shorts-ko"), sections.heardInShortsItemIds())
+            assertTrue(uncategorizedHomeSections(sections).any { it.title == "Heard in Shorts" })
+            assertTrue(uncategorizedHomeSections(sections).any { it.title == "Shorts에서 들은 음악" })
+        }
+
     private fun repository(
         response: String,
         status: HttpStatusCode = HttpStatusCode.OK,
@@ -875,6 +908,94 @@ class HomePageParsingTest {
                   }}
                 ]}
               }}}]}}
+            }
+            """
+
+        const val HEARD_IN_SHORTS_CONTINUATION_RESPONSE =
+            """
+            {
+              "continuationContents": {"sectionListContinuation": {
+                "contents": [
+                  {"musicCarouselShelfRenderer": {
+                    "header": {"musicCarouselShelfBasicHeaderRenderer": {
+                      "title": {"runs": [{"text": "Quick picks"}]},
+                      "moreContentButton": {"buttonRenderer": {
+                        "navigationEndpoint": {"watchEndpoint": {"videoId": "pick-1"}}
+                      }}
+                    }},
+                    "numItemsPerColumn": "4",
+                    "contents": [
+                      {"musicResponsiveListItemRenderer": {
+                        "flexColumns": [{"musicResponsiveListItemFlexColumnRenderer": {"text": {"runs": [{"text": "Pick one"}]}}}],
+                        "playlistItemData": {"videoId": "pick-1"}
+                      }},
+                      {"musicResponsiveListItemRenderer": {
+                        "flexColumns": [{"musicResponsiveListItemFlexColumnRenderer": {"text": {"runs": [{"text": "Shared shorts song"}]}}}],
+                        "playlistItemData": {"videoId": "shorts-shared"}
+                      }}
+                    ]
+                  }},
+                  {"musicCarouselShelfRenderer": {
+                    "header": {"musicCarouselShelfBasicHeaderRenderer": {
+                      "title": {"runs": [{"text": "Heard in Shorts"}]},
+                      "moreContentButton": {"buttonRenderer": {
+                        "navigationEndpoint": {"watchEndpoint": {"videoId": "shorts-shared"}}
+                      }}
+                    }},
+                    "numItemsPerColumn": "4",
+                    "contents": [
+                      {"musicResponsiveListItemRenderer": {
+                        "flexColumns": [{"musicResponsiveListItemFlexColumnRenderer": {"text": {"runs": [{"text": "Shared shorts song"}]}}}],
+                        "playlistItemData": {"videoId": "shorts-shared"}
+                      }},
+                      {"musicResponsiveListItemRenderer": {
+                        "flexColumns": [{"musicResponsiveListItemFlexColumnRenderer": {"text": {"runs": [{"text": "Shorts only"}]}}}],
+                        "playlistItemData": {"videoId": "shorts-only"}
+                      }}
+                    ]
+                  }},
+                  {"musicCarouselShelfRenderer": {
+                    "header": {"musicCarouselShelfBasicHeaderRenderer": {
+                      "title": {"runs": [{"text": "Shorts에서 들은 음악"}]},
+                      "moreContentButton": {"buttonRenderer": {
+                        "navigationEndpoint": {"browseEndpoint": {"browseId": "FEmusic_quickpicks_shorts"}}
+                      }}
+                    }},
+                    "numItemsPerColumn": "4",
+                    "contents": [
+                      {"musicResponsiveListItemRenderer": {
+                        "flexColumns": [{"musicResponsiveListItemFlexColumnRenderer": {"text": {"runs": [{"text": "Korean shorts song"}]}}}],
+                        "playlistItemData": {"videoId": "shorts-ko"}
+                      }}
+                    ]
+                  }},
+                  {"musicCarouselShelfRenderer": {
+                    "header": {"musicCarouselShelfBasicHeaderRenderer": {
+                      "title": {"runs": [{
+                        "text": "Similar to The Shorts",
+                        "navigationEndpoint": {"browseEndpoint": {"browseId": "UC_the_shorts"}}
+                      }]}
+                    }},
+                    "contents": [
+                      {"musicResponsiveListItemRenderer": {
+                        "flexColumns": [{"musicResponsiveListItemFlexColumnRenderer": {"text": {"runs": [{"text": "Artist track"}]}}}],
+                        "playlistItemData": {"videoId": "artist-track"}
+                      }}
+                    ]
+                  }},
+                  {"musicCarouselShelfRenderer": {
+                    "header": {"musicCarouselShelfBasicHeaderRenderer": {
+                      "title": {"runs": [{"text": "Short listens"}]}
+                    }},
+                    "contents": [
+                      {"musicResponsiveListItemRenderer": {
+                        "flexColumns": [{"musicResponsiveListItemFlexColumnRenderer": {"text": {"runs": [{"text": "Short track"}]}}}],
+                        "playlistItemData": {"videoId": "short-track"}
+                      }}
+                    ]
+                  }}
+                ]
+              }}
             }
             """
     }

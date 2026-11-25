@@ -40,8 +40,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import io.github.museakheeyyy.muse.shared.api.ReturnYouTubeDislike
 import io.github.museakheeyyy.muse.shared.api.SongPlayerInformation
 import io.github.museakheeyyy.muse.shared.api.SongWatchInformation
+import io.github.museakheeyyy.muse.shared.api.VideoVotes
 import io.github.museakheeyyy.muse.shared.db.MusicDatabase
 import io.github.museakheeyyy.muse.shared.generated.resources.Res
 import io.github.museakheeyyy.muse.shared.generated.resources.about
@@ -58,6 +60,7 @@ import io.github.museakheeyyy.muse.shared.generated.resources.detail_available
 import io.github.museakheeyyy.muse.shared.generated.resources.detail_in_library
 import io.github.museakheeyyy.muse.shared.generated.resources.detail_remove_token
 import io.github.museakheeyyy.muse.shared.generated.resources.details
+import io.github.museakheeyyy.muse.shared.generated.resources.dislikes
 import io.github.museakheeyyy.muse.shared.generated.resources.duration
 import io.github.museakheeyyy.muse.shared.generated.resources.explicit
 import io.github.museakheeyyy.muse.shared.generated.resources.file_size
@@ -135,12 +138,23 @@ fun SongDetailsContent(
         var watchInformation by remember { mutableStateOf<SongWatchInformation?>(null) }
         var playerInformationLoading by remember { mutableStateOf(!song.isLocal) }
         var watchInformationLoading by remember { mutableStateOf(!song.isLocal) }
+        var votes by remember { mutableStateOf<VideoVotes?>(null) }
+        var votesLoading by remember { mutableStateOf(!song.isLocal) }
         LaunchedEffect(song.id) {
             if (!song.isLocal) {
                 try {
                     playerInformation = GlobalYouTubeRepository.instance.getSongPlayerInformation(song.id)
                 } finally {
                     playerInformationLoading = false
+                }
+            }
+        }
+        LaunchedEffect(song.id) {
+            if (!song.isLocal) {
+                try {
+                    votes = ReturnYouTubeDislike.votes(song.id)
+                } finally {
+                    votesLoading = false
                 }
             }
         }
@@ -283,7 +297,12 @@ fun SongDetailsContent(
                     (watchInformation?.viewCount ?: playerInformation?.viewCount)?.let(numbers::number),
                     playerInformationLoading || watchInformationLoading,
                 )
-                addValue(stringResource(Res.string.likes), watchInformation?.likeCount?.let(numbers::number), watchInformationLoading)
+                addValue(
+                    stringResource(Res.string.likes),
+                    (watchInformation?.likeCount ?: votes?.likes)?.let(numbers::number),
+                    watchInformationLoading || votesLoading,
+                )
+                addValue(stringResource(Res.string.dislikes), votes?.dislikes?.let(numbers::number), votesLoading)
                 addValue(stringResource(Res.string.upload_date), watchInformation?.uploadDate, watchInformationLoading)
                 addValue(
                     stringResource(Res.string.artist),

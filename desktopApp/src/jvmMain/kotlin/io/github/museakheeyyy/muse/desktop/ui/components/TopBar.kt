@@ -122,7 +122,6 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.WindowScope
 import io.github.museakheeyyy.muse.desktop.deviceconnect.DesktopDeviceConnect
 import io.github.museakheeyyy.muse.desktop.state.app.UiState
 import io.github.museakheeyyy.muse.desktop.state.auth.AuthState
@@ -140,6 +139,8 @@ import io.github.museakheeyyy.muse.desktop.storage.DownloadState
 import io.github.museakheeyyy.muse.desktop.storage.downloadQueueSummary
 import io.github.museakheeyyy.muse.desktop.ui.layouts.AccountMenu
 import io.github.museakheeyyy.muse.desktop.utils.WindowDragHandle
+import io.github.museakheeyyy.muse.desktop.window.DesktopWindowScope
+import io.github.museakheeyyy.muse.desktop.window.asComposeWindowScope
 import io.github.museakheeyyy.muse.desktop.window.jna.structure.isWindows10OrLater
 import io.github.museakheeyyy.muse.shared.generated.resources.Res
 import io.github.museakheeyyy.muse.shared.generated.resources.cd_account_menu
@@ -199,7 +200,7 @@ val LocalCaptionBarInsets = staticCompositionLocalOf { WindowInsets(0) }
 internal val DesktopTitleBarHeight = 48.dp
 
 @Composable
-fun WindowScope.CustomTitleBar(
+fun DesktopWindowScope.CustomTitleBar(
     title: String,
     colorScheme: ColorScheme,
     searchText: String,
@@ -310,7 +311,7 @@ fun WindowScope.CustomTitleBar(
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun WindowScope.TopBarWithPlayer(
+fun DesktopWindowScope.TopBarWithPlayer(
     colorScheme: ColorScheme,
     searchText: String,
     onSearchChange: (String) -> Unit,
@@ -749,7 +750,7 @@ fun WindowScope.TopBarWithPlayer(
     } else if (OsUtil.isWindows) {
         titlebarContent2()
     } else {
-        WindowDraggableArea(content = titlebarContent2)
+        asComposeWindowScope()?.WindowDraggableArea(content = titlebarContent2) ?: titlebarContent2()
     }
 }
 

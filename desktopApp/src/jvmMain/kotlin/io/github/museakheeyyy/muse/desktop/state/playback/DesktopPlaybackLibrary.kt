@@ -12,6 +12,7 @@ import io.github.museakheeyyy.muse.shared.api.YouTubeRepository
 import io.github.museakheeyyy.muse.shared.db.MusicDatabase
 import io.github.museakheeyyy.muse.shared.db.distinctPlaylistItems
 import io.github.museakheeyyy.muse.shared.db.preserveKnownPlaylistEditability
+import io.github.museakheeyyy.muse.shared.db.readOnlyPlaylistItems
 import io.github.museakheeyyy.muse.shared.db.selectablePlaylistItems
 import io.github.museakheeyyy.muse.shared.model.PlaylistItem
 import io.github.museakheeyyy.muse.shared.model.SongItem
@@ -53,7 +54,16 @@ internal class DesktopPlaybackLibrary(
             }
         publishLocal(local)
         if (!signedIn) {
-            local
+            // Saved online playlists follow as read-only entries that only show membership.
+            local +
+                withContext(Dispatchers.IO) {
+                    val dao = database().dao()
+                    val saved = dao.playlistsByCreateDateAsc().first()
+                    val playtimes = dao.playlistLibraryStats(saved.map { it.id }).associate { it.playlistId to it.playtime }
+                    saved
+                        .readOnlyPlaylistItems(signedIn, playtimes = playtimes)
+                        .filterNot { LibraryDeletionTracker.isDeleted(it) }
+                }
         } else {
             val result = repository().getUserPlaylistsResult()
             local +
@@ -192,7 +202,10 @@ internal class DesktopPlaybackLibrary(
                                         } catch (_: Exception) {
                                             false
                                         }
-                                    if (contains) playlist.id.removePrefix("VL") else null
+                                    val id = playlist.id.removePrefix("VL")
+                                    // Publish each match as it arrives so slow lookups never hold back the others.
+                                    if (contains && isCurrent()) userPlaylistMembership = userPlaylistMembership + id
+                                    if (contains) id else null
                                 }
                             }.awaitAll()
                             .filterNotNull()

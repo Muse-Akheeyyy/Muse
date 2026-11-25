@@ -11,6 +11,16 @@ For dependency development, choose one substitution:
 
 These flags do not alter hosted pins. QuackJS handles signature and throttling transforms separately from PO-token attestation.
 
+## Content locale
+
+`GlobalYouTube.contentLocale` retains the resolved content language, including region and script subtags. Shazam, Paxsenix lyrics, subtitle preferences and Last.fm use it. Subtitle selection tries the exact tag, then its primary language, while preserving the preference for manual captions over automatic captions. Saved `lastResolvedContentLanguage` also retains this tag for artwork and artist lookups.
+
+When YouTube Music does not serve the system region, `closestContentCountry` picks the alphabetically first served region with a locale in the same language, preferring the same script. If no served region uses that language, it sends `US`, as the maintainer decided in [#5150](https://github.com/MetrolistGroup/Metrolist/issues/5150).
+
+Only the InnerTube locale maps the language to a YouTube-accepted `hl`, trying the full tag, its first two subtags and then the primary language. The isolated song-details request applies the same mapping. YouTube response date parsing, Home cache signatures, playback diagnostics and search suggestions use the request locale. Discord labels and display number/date formats use the app or system locale.
+
+If no tag is accepted, `hl` is blank and InnerTubeX v0.13.1 or later leaves it out of the request context, so YouTube picks the language from the IP address and request headers.
+
 ## Pagination
 
 App callers use `shared/src/commonMain/kotlin/io/github/museakheeyyy/muse/shared/api/YouTubeRepository.kt`.
@@ -24,6 +34,8 @@ App callers use `shared/src/commonMain/kotlin/io/github/museakheeyyy/muse/shared
 - Playlist queues finish continuations before recommendations. Full-queue consumers, including synchronized playback, need complete snapshots. Respect cancellation and Auto load more when accepting in-flight results.
 
 Artist failures retain available offline data. Without it, propagate the original error and log the response stage/status without bodies or credentials.
+
+Greyed browse rows with a title and duration remain eligible for playback, including rows whose title opens a Premium dialog. That restriction describes the browse client; the stream resolver can try other clients. Deleted and private placeholders without playable metadata stay unavailable.
 
 ## Search
 
@@ -39,7 +51,7 @@ Home projects API renderers through shared models. Preserve shelf order, header 
 
 Home shelf pages use two columns for collections and artists, full-width 16:9 cards for video shelves, and rows for songs or mixed content. They retain the shelf items while loading its continuation or browse endpoint. Android and the shared mobile host retain page loaders with their navigation entries; paging failures keep the cursor for retry. Page identity includes the feed endpoint, chip parameters and shelf identity. Shelf More endpoints take precedence over header links. Artist header links never replace shelf contents with an artist page; a filtered shelf without its own endpoint parameters or cursor shows its existing items.
 
-Quick picks reuses a source shelf's browse endpoint and continuation only when that shelf contains every displayed pick. Local recommendations that only overlap an API shelf keep their existing songs when expanded. Without an endpoint or continuation, the page ends without a network request.
+Quick picks reuses a source shelf's browse endpoint and continuation only when that shelf contains every displayed pick. Local recommendations that only overlap an API shelf keep their existing songs when expanded. Without an endpoint or continuation, the page ends without a network request. Songs present in the "Heard in Shorts" shelf are always excluded from Quick picks while remaining in the "Heard in Shorts" shelf when it is visible.
 
 Signed-in, unfiltered Home fetches only missing moods and genres from Explore after its last continuation. Existing main-feed moods skip that request. The moods shelf stays at the end of the main feed, before any separately appended feeds. No other Explore shelves enter signed-in Home.
 

@@ -25,7 +25,9 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import io.github.museakheeyyy.muse.desktop.utils.LINUX_WEBKIT_SONAME
+import io.github.museakheeyyy.muse.desktop.utils.WaylandScale
 import io.github.museakheeyyy.muse.desktop.utils.isLinuxWebKitAvailable
+import io.github.museakheeyyy.muse.desktop.utils.isWebKitGtkLibraryAvailable
 import io.github.museakheeyyy.muse.desktop.utils.linuxWebKitInstallCommand
 import io.github.museakheeyyy.muse.shared.generated.resources.Res
 import io.github.museakheeyyy.muse.shared.generated.resources.close
@@ -40,9 +42,20 @@ import kotlinx.coroutines.withContext
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-internal fun rememberLinuxWebKitAvailable(): Boolean? {
+internal fun rememberLinuxWebKitAvailable(waylandHostSupported: Boolean = false): Boolean? {
     val available by produceState<Boolean?>(if (OsUtil.isLinux) null else true) {
-        if (OsUtil.isLinux) value = withContext(Dispatchers.IO) { isLinuxWebKitAvailable() }
+        if (OsUtil.isLinux) {
+            value =
+                withContext(Dispatchers.IO) {
+                    if (waylandHostSupported &&
+                        WaylandScale.isNativeWaylandActive()
+                    ) {
+                        isWebKitGtkLibraryAvailable()
+                    } else {
+                        isLinuxWebKitAvailable()
+                    }
+                }
+        }
     }
     return available
 }

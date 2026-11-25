@@ -42,6 +42,7 @@ import io.github.museakheeyyy.muse.shared.constants.AudioTrackPlaybackParamsKey
 import io.github.museakheeyyy.muse.shared.constants.AutoBackupEnabledKey
 import io.github.museakheeyyy.muse.shared.constants.AutoBackupFrequencyKey
 import io.github.museakheeyyy.muse.shared.constants.AutoBackupLastSuccessEpochKey
+import io.github.museakheeyyy.muse.shared.constants.AutoInstallUpdatesKey
 import io.github.museakheeyyy.muse.shared.constants.AutoPureBlackKey
 import io.github.museakheeyyy.muse.shared.constants.BlockAiSlopArtistsKey
 import io.github.museakheeyyy.muse.shared.constants.BlockedArtistsUndoHintShownKey
@@ -54,6 +55,7 @@ import io.github.museakheeyyy.muse.shared.constants.CanvasCacheSizeKey
 import io.github.museakheeyyy.muse.shared.constants.CanvasContentOrderKey
 import io.github.museakheeyyy.muse.shared.constants.CanvasEnabledSourcesKey
 import io.github.museakheeyyy.muse.shared.constants.CastEnabledKey
+import io.github.museakheeyyy.muse.shared.constants.CastVolumeStepKey
 import io.github.museakheeyyy.muse.shared.constants.ClassicRecommendationsKey
 import io.github.museakheeyyy.muse.shared.constants.CollectionCoversKey
 import io.github.museakheeyyy.muse.shared.constants.DatabaseLikesRecoveryVersionKey
@@ -97,6 +99,7 @@ import io.github.museakheeyyy.muse.shared.constants.HiddenHomeItemsJsonKey
 import io.github.museakheeyyy.muse.shared.constants.HiddenHomeUndoHintShownKey
 import io.github.museakheeyyy.muse.shared.constants.HiddenLibraryUndoHintShownKey
 import io.github.museakheeyyy.muse.shared.constants.HideNonMusicalVideosKey
+import io.github.museakheeyyy.muse.shared.constants.HidePlaylistRecommendationsKey
 import io.github.museakheeyyy.muse.shared.constants.HideRecentSearchesKey
 import io.github.museakheeyyy.muse.shared.constants.HideShortSongsKey
 import io.github.museakheeyyy.muse.shared.constants.HistoryPlaylistsEnabledKey
@@ -124,6 +127,7 @@ import io.github.museakheeyyy.muse.shared.constants.LikedSongsCustomOrdersJsonKe
 import io.github.museakheeyyy.muse.shared.constants.LikedSongsOrderAccountKey
 import io.github.museakheeyyy.muse.shared.constants.LikedSongsOrderCustomizedKey
 import io.github.museakheeyyy.muse.shared.constants.LikedSongsRecencyJsonKey
+import io.github.museakheeyyy.muse.shared.constants.ListenBrainzApiUrlKey
 import io.github.museakheeyyy.muse.shared.constants.ListenTogetherEnabledKey
 import io.github.museakheeyyy.muse.shared.constants.ListenTogetherServerMetadataKey
 import io.github.museakheeyyy.muse.shared.constants.LoudnessLevelKey
@@ -162,6 +166,7 @@ import io.github.museakheeyyy.muse.shared.constants.PreferWordSyncedLyricsKey
 import io.github.museakheeyyy.muse.shared.constants.PromptContinuePlaybackKey
 import io.github.museakheeyyy.muse.shared.constants.QueuedYouTubeHistoryJsonKey
 import io.github.museakheeyyy.muse.shared.constants.RecentPlayedSearchSongsJsonKey
+import io.github.museakheeyyy.muse.shared.constants.ResumeOnBluetoothConnectKey
 import io.github.museakheeyyy.muse.shared.constants.SeekDurationSecondsKey
 import io.github.museakheeyyy.muse.shared.constants.SentryEnabledKey
 import io.github.museakheeyyy.muse.shared.constants.ShowBottomNavHomeKey
@@ -185,16 +190,19 @@ import io.github.museakheeyyy.muse.shared.constants.SleepTimerDefaultFinishCurre
 import io.github.museakheeyyy.muse.shared.constants.SleepTimerDefaultMinutesKey
 import io.github.museakheeyyy.muse.shared.constants.SliderTrackThicknessDpKey
 import io.github.museakheeyyy.muse.shared.constants.SlimNavBarKey
+import io.github.museakheeyyy.muse.shared.constants.SongShareLinkKey
 import io.github.museakheeyyy.muse.shared.constants.SpeedDialArtworkRefreshTimesKey
 import io.github.museakheeyyy.muse.shared.constants.SpeedDialSurprisePinnedKey
 import io.github.museakheeyyy.muse.shared.constants.SponsorBlockEnabledKey
 import io.github.museakheeyyy.muse.shared.constants.SupportPromptDismissedKey
 import io.github.museakheeyyy.muse.shared.constants.SupportPromptLaunchThresholdKey
 import io.github.museakheeyyy.muse.shared.constants.SupportPromptLaunchesKey
+import io.github.museakheeyyy.muse.shared.constants.SwipeToRemoveFromQueueKey
 import io.github.museakheeyyy.muse.shared.constants.SwipeToRemoveSongKey
 import io.github.museakheeyyy.muse.shared.constants.SwipeToSongKey
 import io.github.museakheeyyy.muse.shared.constants.TempoPitchPresetsJsonKey
 import io.github.museakheeyyy.muse.shared.constants.TokenLoginWarningDismissedKey
+import io.github.museakheeyyy.muse.shared.constants.UpdateInstallMethodKey
 import io.github.museakheeyyy.muse.shared.constants.UseLegacyShuffleKey
 import io.github.museakheeyyy.muse.shared.constants.VarispeedKey
 import io.github.museakheeyyy.muse.shared.constants.VideoViewerVisibleKey
@@ -321,6 +329,7 @@ class Settings(
     var hideVideoSongs by preference(false)
     var hideNonMusicalVideos by preference(HideNonMusicalVideosKey, false)
     var hidePodcasts by preference(false)
+    var hidePlaylistRecommendations by preference(HidePlaylistRecommendationsKey, false)
     var hideShortSongs by preference(HideShortSongsKey, false)
     var minimumSongDurationSeconds by preference(MinimumSongDurationSecondsKey, 30)
     var blockAiSlopArtists by preference(BlockAiSlopArtistsKey, true)
@@ -371,6 +380,7 @@ class Settings(
     var miniPlayerBackgroundStyle by preference("DEFAULT")
     var playerThumbnailStyle by preference(PlayerThumbnailStyle.COMPACT)
     var castEnabled by preference(CastEnabledKey, true)
+    var castVolumeStep by preference(CastVolumeStepKey, 5)
     var showPlayerCastButton by preference(ShowPlayerCastButtonKey, true)
     var showPlayerVideoButton by preference(ShowPlayerVideoButtonKey, true)
 
@@ -466,6 +476,7 @@ class Settings(
     var seekExtraSeconds by preference(false)
     var seekDurationSeconds by preference(SeekDurationSecondsKey, 10)
     var pauseOnMute by preference(PauseOnMuteKey, false)
+    var resumeOnBluetoothConnect by preference(ResumeOnBluetoothConnectKey, false)
     var stopMusicOnTaskClear by preference(true)
     var githubNTransformEnabled by preference(GitHubNTransformEnabledKey, false)
     var githubNTransformConfigUrl by preference(
@@ -609,6 +620,10 @@ class Settings(
     var checkForUpdates by preference(true)
     var updateNotifications by preference(true)
     var updateChannel by preference("")
+
+    /** Android only: name of the update install method (SYSTEM, ROOT or SHIZUKU). */
+    var updateInstallMethod by preference(UpdateInstallMethodKey, "SYSTEM")
+    var autoInstallUpdates by preference(AutoInstallUpdatesKey, false)
     var installedNightlyDigest by preference("")
     var lastUpdateCheckTimestamp by preference(0L)
     var lastUpdateCheckAttemptTimestamp by preference(0L)
@@ -670,6 +685,8 @@ class Settings(
     var listenBrainzUsername by preference("")
     var listenBrainzEnabled by preference(false)
     var listenBrainzUseNowPlaying by preference(true)
+    var listenBrainzApiUrl by preference(ListenBrainzApiUrlKey, "")
+    var songShareLink by preference(SongShareLinkKey, SongShareLink.YOUTUBE_MUSIC.name)
     var pendingScrobblesJson by preference("[]")
     var corruptPendingScrobblesJson by preference("")
     var systemInDarkTheme by preference(false)
@@ -694,6 +711,7 @@ class Settings(
     var swipeSensitivity by preference(73f)
     var swipeToSong by preference(SwipeToSongKey, false)
     var swipeToRemoveSong by preference(SwipeToRemoveSongKey, false)
+    var swipeToRemoveFromQueue by preference(SwipeToRemoveFromQueueKey, false)
     var autoLoadMore by preference(true)
     var classicRecommendations by preference(ClassicRecommendationsKey, false)
     var disableLoadMoreWhenRepeatAll by preference(false)
@@ -1461,7 +1479,6 @@ internal val retiredPortableSettingTypes =
         "lastFmArtistAvatarsJson" to SettingType.STRING,
         "enableMusicVideos" to SettingType.BOOLEAN,
         "autoPlayMusicVideos" to SettingType.BOOLEAN,
-        "resumeOnBluetoothConnect" to SettingType.BOOLEAN,
         "pureBlack" to SettingType.BOOLEAN,
         "desktopSidebarExpanded" to SettingType.BOOLEAN,
         "discordRpcActivityType" to SettingType.STRING,

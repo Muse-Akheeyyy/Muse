@@ -14,6 +14,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.isAltPressed
+import androidx.compose.ui.input.key.isCtrlPressed
+import androidx.compose.ui.input.key.isMetaPressed
+import androidx.compose.ui.input.key.isShiftPressed
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.isForwardPressed
+import androidx.compose.ui.input.pointer.isPrimaryPressed
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.InterceptPlatformTextInput
 import androidx.compose.ui.platform.PlatformTextInputInterceptor
 import io.github.museakheeyyy.muse.desktop.deviceconnect.DesktopDeviceConnect
@@ -21,6 +34,7 @@ import io.github.museakheeyyy.muse.desktop.state.app.DesktopNavigation
 import io.github.museakheeyyy.muse.desktop.state.app.UiState
 import io.github.museakheeyyy.muse.desktop.state.playback.LyricsState
 import io.github.museakheeyyy.muse.desktop.state.playback.PlayerState
+import io.github.museakheeyyy.muse.desktop.utils.WaylandScale
 import io.github.museakheeyyy.muse.desktop.web.DesktopWebViewAvailability
 import io.github.museakheeyyy.muse.shared.settings.Settings
 import io.github.museakheeyyy.muse.shared.ui.navigation.NavigationBackHandler
@@ -110,24 +124,81 @@ fun DesktopShortcutLayer(
                 }
             }
         }
-    DisposableEffect(Unit) {
-        val dispatcher =
-            installGlobalShortcutDispatcher(
-                keyFocus,
-                { backgroundFocused() },
-                { refresh() },
-                { toggleFullscreen() },
-                { forward() },
-                { clearFocus() },
-            )
-        onDispose { dispatcher.close() }
+    val useTaoWayland = WaylandScale.isNativeWaylandActive()
+    if (!useTaoWayland) {
+        DisposableEffect(Unit) {
+            val dispatcher =
+                installGlobalShortcutDispatcher(
+                    keyFocus,
+                    { backgroundFocused() },
+                    { refresh() },
+                    { toggleFullscreen() },
+                    { forward() },
+                    { clearFocus() },
+                )
+            onDispose { dispatcher.close() }
+        }
     }
+
+    val boxModifier =
+        if (useTaoWayland) {
+            // Matches the AWT mouse queue: a primary click leaves keyboard navigation.
+            modifier
+                .pointerInput(keyFocus) {
+                    awaitPointerEventScope {
+                        var forwardHeld = false
+                        while (true) {
+                            val event = awaitPointerEvent(PointerEventPass.Initial)
+                            // buttons is the held state, so only the transition to held counts as a forward press.
+                            val forwardPressed = event.buttons.isForwardPressed && !forwardHeld
+                            forwardHeld = event.buttons.isForwardPressed
+                            if (event.type != PointerEventType.Press) continue
+                            if (event.buttons.isPrimaryPressed) keyFocus.keyboardNavigation = false
+                            // The AWT forward-button handler is not installed on Tao.
+                            if (forwardPressed && !isComposeModalActive()) {
+                                event.changes.forEach { it.consume() }
+                                forward()
+                            }
+                        }
+                    }
+                }.onPreviewKeyEvent { event ->
+                    if (event.type != KeyEventType.KeyDown || event.key == Key.Escape) return@onPreviewKeyEvent false
+                    if (event.key == Key.Tab ||
+                        ((event.key == Key.DirectionUp || event.key == Key.DirectionDown) && !backgroundFocused())
+                    ) {
+                        keyFocus.keyboardNavigation = true
+                    }
+                    val editableInputActive = keyFocus.textInputActive || UiState.isTextInputFocused || UiState.isSearchFocused
+                    val modalActive = isComposeModalActive()
+                    if (event.key == Key.F5 && modalActive) return@onPreviewKeyEvent false
+                    val pairingApprovalPending =
+                        DesktopDeviceConnect.manager.state.value.pairingRequests
+                            .any { it.requiresApproval }
+                    handleShortcut(
+                        ctrl = event.isCtrlPressed,
+                        meta = event.isMetaPressed,
+                        shift = event.isShiftPressed,
+                        keyCode = ShortcutKeyCode.Compose(event.key),
+                        suppressUnmodified = editableInputActive || modalActive,
+                        modalActive = modalActive,
+                        onRefresh = { refresh() },
+                        toggleWindowFullscreen = { toggleFullscreen() },
+                        pairingApprovalPending = pairingApprovalPending,
+                        isPlaybackBackgroundFocused = backgroundFocused(),
+                        mediaKeysAllowed = keyFocus.allowsMediaKeys(backgroundFocused()),
+                        alt = event.isAltPressed,
+                        cancelLyricsSelection = LyricsState.cancelSelection.takeUnless { modalActive },
+                    )
+                }
+        } else {
+            modifier
+        }
 
     CompositionLocalProvider(LocalPlaybackKeyFocus provides keyFocus) {
         InterceptPlatformTextInput(
             interceptor = textInputInterceptor,
         ) {
-            Box(modifier = modifier) { content() }
+            Box(modifier = boxModifier) { content() }
         }
     }
 }

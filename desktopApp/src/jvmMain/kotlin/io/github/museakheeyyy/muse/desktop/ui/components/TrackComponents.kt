@@ -70,7 +70,6 @@ import io.github.museakheeyyy.muse.desktop.state.playback.PlayerState
 import io.github.museakheeyyy.muse.desktop.storage.DownloadState
 import io.github.museakheeyyy.muse.shared.constants.ListItemHeight
 import io.github.museakheeyyy.muse.shared.constants.ListThumbnailSize
-import io.github.museakheeyyy.muse.shared.constants.ThumbnailCornerRadius
 import io.github.museakheeyyy.muse.shared.generated.resources.Res
 import io.github.museakheeyyy.muse.shared.generated.resources.artist
 import io.github.museakheeyyy.muse.shared.generated.resources.browse
@@ -112,6 +111,7 @@ import io.github.museakheeyyy.muse.shared.ui.icons.SongStatusIcons
 import io.github.museakheeyyy.muse.shared.ui.menu.cursorContextMenu
 import io.github.museakheeyyy.muse.shared.ui.menu.rememberCursorContextMenuState
 import io.github.museakheeyyy.muse.shared.ui.navigation.navigationPopupSource
+import io.github.museakheeyyy.muse.shared.ui.theme.gridCellShape
 import io.github.museakheeyyy.muse.shared.ui.utils.artistArtworkShape
 import io.github.museakheeyyy.muse.shared.utils.formatDuration
 import org.jetbrains.compose.resources.stringResource
@@ -281,7 +281,7 @@ fun YTListItem(
     val shape =
         animatedCurrentSongArtworkShape(
             isCurrentTrack,
-            if (item is ArtistItem) artistArtworkShape(item.id) else RoundedCornerShape(ThumbnailCornerRadius),
+            if (item is ArtistItem) artistArtworkShape(item.id) else gridCellShape(),
         )
     val colors = animateCurrentSongColors(isCurrentTrack, colorScheme)
     val contentColor = colors.content

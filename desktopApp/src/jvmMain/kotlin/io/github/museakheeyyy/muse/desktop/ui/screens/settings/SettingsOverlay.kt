@@ -58,15 +58,19 @@ import io.github.museakheeyyy.muse.desktop.ui.components.rememberMetroEqProfileP
 import io.github.museakheeyyy.muse.desktop.utils.AppLogger
 import io.github.museakheeyyy.muse.desktop.utils.DesktopFontManager
 import io.github.museakheeyyy.muse.desktop.utils.SentryManager
+import io.github.museakheeyyy.muse.desktop.utils.pickDesktopFile
 import io.github.museakheeyyy.muse.shared.generated.resources.Res
 import io.github.museakheeyyy.muse.shared.generated.resources.app_font_active
 import io.github.museakheeyyy.muse.shared.generated.resources.app_font_checking
+import io.github.museakheeyyy.muse.shared.generated.resources.app_font_choose
 import io.github.museakheeyyy.muse.shared.generated.resources.app_font_download_and_use
 import io.github.museakheeyyy.muse.shared.generated.resources.app_font_download_error
 import io.github.museakheeyyy.muse.shared.generated.resources.app_font_downloading
 import io.github.museakheeyyy.muse.shared.generated.resources.app_font_google_sans
+import io.github.museakheeyyy.muse.shared.generated.resources.app_font_import_custom
 import io.github.museakheeyyy.muse.shared.generated.resources.app_font_installed
 import io.github.museakheeyyy.muse.shared.generated.resources.app_font_inter
+import io.github.museakheeyyy.muse.shared.generated.resources.app_font_invalid
 import io.github.museakheeyyy.muse.shared.generated.resources.app_font_maple_mono
 import io.github.museakheeyyy.muse.shared.generated.resources.app_font_system
 import io.github.museakheeyyy.muse.shared.generated.resources.app_language_system
@@ -105,6 +109,8 @@ import io.github.museakheeyyy.muse.shared.ui.settings.SharedSettingsScreen
 import io.github.museakheeyyy.muse.shared.ui.settings.settingsHomeSections
 import io.github.museakheeyyy.muse.shared.ui.settings.settingsPageSubtitle
 import io.github.museakheeyyy.muse.shared.ui.utils.rememberFileSizeFormatter
+import io.github.museakheeyyy.muse.shared.utils.OsUtil
+import io.github.museakheeyyy.muse.shared.utils.openUrl
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -186,6 +192,9 @@ fun SettingsOverlay(colorScheme: ColorScheme) {
     var installedFontOptions by remember { mutableStateOf<Set<FontOption>?>(null) }
     var downloadingFont by remember { mutableStateOf<FontOption?>(null) }
     var failedFontDownload by remember { mutableStateOf<FontOption?>(null) }
+    var customFontName by remember { mutableStateOf<String?>(null) }
+    var failedFontImport by remember { mutableStateOf(false) }
+    val chooseFontTitle = stringResource(Res.string.app_font_choose)
     val fontLabels =
         mapOf(
             FontOption.INTER to stringResource(Res.string.app_font_inter),
@@ -211,7 +220,50 @@ fun SettingsOverlay(colorScheme: ColorScheme) {
                 enabled = downloadingFont == null,
                 onClick = { Settings.shared.appFont = FontOption.SYSTEM },
             ),
-        )
+        ) +
+            listOfNotNull(
+                SettingsHostAction(
+                    id = "chooseCustomFont",
+                    title = chooseFontTitle,
+                    description =
+                        if (failedFontImport) {
+                            stringResource(Res.string.app_font_invalid)
+                        } else {
+                            stringResource(Res.string.app_font_import_custom)
+                        },
+                    enabled = installedFontOptions != null && downloadingFont == null,
+                    onClick = {
+                        downloadingFont = FontOption.CUSTOM
+                        failedFontImport = false
+                        scope.launch {
+                            try {
+                                pickDesktopFile(chooseFontTitle, listOf("ttf", "otf"))?.let { file ->
+                                    DesktopFontManager.importCustom(file).fold(
+                                        onSuccess = { customFontName = it },
+                                        onFailure = { failedFontImport = true },
+                                    )
+                                }
+                            } finally {
+                                downloadingFont = null
+                            }
+                        }
+                    },
+                ),
+                customFontName?.let { name ->
+                    SettingsHostAction(
+                        id = FontOption.CUSTOM.name,
+                        title = name,
+                        description =
+                            if (Settings.shared.appFont == FontOption.CUSTOM) {
+                                stringResource(Res.string.app_font_active)
+                            } else {
+                                stringResource(Res.string.app_font_installed)
+                            },
+                        enabled = downloadingFont == null,
+                        onClick = { Settings.shared.appFont = FontOption.CUSTOM },
+                    )
+                },
+            )
     val fontDownloadActions =
         DesktopFontManager.downloadableOptions.map { option ->
             val installed = option in installedFontOptions.orEmpty()
@@ -261,15 +313,27 @@ fun SettingsOverlay(colorScheme: ColorScheme) {
                 id = "openLogFolder",
                 title = stringResource(Res.string.settings_open_log_folder),
                 description = stringResource(Res.string.settings_log_directory_summary),
-                enabled = Desktop.isDesktopSupported(),
-                onClick = { runCatching { Desktop.getDesktop().open(AppLogger.getLogDirectory()) } },
+                enabled = OsUtil.isLinux || OsUtil.isMac || Desktop.isDesktopSupported(),
+                onClick = {
+                    val logDir = AppLogger.getLogDirectory()
+                    if (runCatching {
+                            check(Desktop.isDesktopSupported())
+                            Desktop.getDesktop().open(logDir)
+                        }.isFailure && (OsUtil.isLinux || OsUtil.isMac)
+                    ) {
+                        runCatching { openUrl(logDir.toURI().toString()) }
+                    }
+                },
             ),
         )
 
     LaunchedEffect(Unit) {
         UiState.openDevtoolsSettingsRequested = false
         UiState.openPlaylistImportRequested = false
-        installedFontOptions = withContext(Dispatchers.IO) { DesktopFontManager.installedOptions() }
+        val (name, installed) = withContext(Dispatchers.IO) { DesktopFontManager.customFontName() to DesktopFontManager.installedOptions() }
+        customFontName = name
+        // Set last: it enables importing, so no import result can be overwritten by this read.
+        installedFontOptions = installed
     }
 
     val dismiss = {
