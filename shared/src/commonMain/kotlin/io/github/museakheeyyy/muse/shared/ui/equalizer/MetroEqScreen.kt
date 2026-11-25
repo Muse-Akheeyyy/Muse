@@ -123,8 +123,13 @@ import io.github.museakheeyyy.muse.shared.generated.resources.metroeq_custom_pro
 import io.github.museakheeyyy.muse.shared.generated.resources.metroeq_delete_profile_confirm
 import io.github.museakheeyyy.muse.shared.generated.resources.metroeq_frequency_value
 import io.github.museakheeyyy.muse.shared.generated.resources.metroeq_peak_reduction
+import io.github.museakheeyyy.muse.shared.generated.resources.metroeq_preset_acoustic
 import io.github.museakheeyyy.muse.shared.generated.resources.metroeq_preset_bass
+import io.github.museakheeyyy.muse.shared.generated.resources.metroeq_preset_commute
+import io.github.museakheeyyy.muse.shared.generated.resources.metroeq_preset_electronic
 import io.github.museakheeyyy.muse.shared.generated.resources.metroeq_preset_flat
+import io.github.museakheeyyy.muse.shared.generated.resources.metroeq_preset_loudness
+import io.github.museakheeyyy.muse.shared.generated.resources.metroeq_preset_pop
 import io.github.museakheeyyy.muse.shared.generated.resources.metroeq_preset_rock
 import io.github.museakheeyyy.muse.shared.generated.resources.metroeq_preset_treble
 import io.github.museakheeyyy.muse.shared.generated.resources.metroeq_preset_v_shape
@@ -149,6 +154,7 @@ import io.github.museakheeyyy.muse.shared.generated.resources.wizard_multiple_va
 import io.github.museakheeyyy.muse.shared.generated.resources.wizard_no_models
 import io.github.museakheeyyy.muse.shared.ui.components.AlertDialog
 import io.github.museakheeyyy.muse.shared.ui.components.ContainedLoadingIndicator
+import io.github.museakheeyyy.muse.shared.ui.components.ExpressiveFilterChip
 import io.github.museakheeyyy.muse.shared.ui.components.ExpressiveSwitch
 import io.github.museakheeyyy.muse.shared.ui.components.PopupContent
 import io.github.museakheeyyy.muse.shared.ui.components.PopupVisibility
@@ -160,6 +166,7 @@ import io.github.museakheeyyy.muse.shared.ui.navigation.navigationPopupSource
 import io.github.museakheeyyy.muse.shared.ui.playback.retainPlaybackKeyFocus
 import io.github.museakheeyyy.muse.shared.ui.settings.LocalSettingsPageBottomPadding
 import io.github.museakheeyyy.muse.shared.ui.utils.DragScrollableColumn
+import io.github.museakheeyyy.muse.shared.ui.utils.carouselScroll
 import io.github.museakheeyyy.muse.shared.ui.utils.verticalScrollWithDrag
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -359,6 +366,24 @@ private fun ProfilesPage(
                 )
             }
         }
+        val presetChipsScrollState = rememberScrollState()
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .carouselScroll(presetChipsScrollState)
+                .horizontalScroll(presetChipsScrollState)
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            EqualizerPreset.entries.forEach { choice ->
+                val title = presetName(choice)
+                ExpressiveFilterChip(
+                    selected = preset == choice,
+                    onClick = { changeProfile { EqualizerProfiles.activatePreset(choice, title) } },
+                    label = { Text(title) },
+                )
+            }
+        }
         error?.let {
             Text(
                 stringResource(it),
@@ -534,10 +559,15 @@ private fun presetName(preset: EqualizerPreset): String =
     stringResource(
         when (preset) {
             EqualizerPreset.FLAT -> Res.string.metroeq_preset_flat
+            EqualizerPreset.COMMUTE -> Res.string.metroeq_preset_commute
             EqualizerPreset.BASS -> Res.string.metroeq_preset_bass
             EqualizerPreset.TREBLE -> Res.string.metroeq_preset_treble
             EqualizerPreset.VOCAL -> Res.string.metroeq_preset_vocal
+            EqualizerPreset.POP -> Res.string.metroeq_preset_pop
             EqualizerPreset.ROCK -> Res.string.metroeq_preset_rock
+            EqualizerPreset.ELECTRONIC -> Res.string.metroeq_preset_electronic
+            EqualizerPreset.ACOUSTIC -> Res.string.metroeq_preset_acoustic
+            EqualizerPreset.LOUDNESS -> Res.string.metroeq_preset_loudness
             EqualizerPreset.V_SHAPE -> Res.string.metroeq_preset_v_shape
         },
     )

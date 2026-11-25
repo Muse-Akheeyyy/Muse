@@ -1,5 +1,6 @@
 package io.github.museakheeyyy.muse.desktop.history
 
+import io.github.museakheeyyy.muse.shared.api.lastfm.LastFmListen
 import io.github.museakheeyyy.muse.shared.db.HistoryCursor
 import io.github.museakheeyyy.muse.shared.db.HistoryStatGroup
 import io.github.museakheeyyy.muse.shared.db.MusicDatabase
@@ -276,9 +277,10 @@ object HistoryRepository {
     suspend fun getStatisticsSnapshot(
         sinceMs: Long,
         untilMs: Long,
+        lastFm: List<LastFmListen> = emptyList(),
     ) = run {
         initialize()
-        database.historyStatisticsSnapshot(sinceMs, untilMs)
+        database.historyStatisticsSnapshot(sinceMs, untilMs, lastFm = lastFm)
     }
 
     suspend fun getHistoryTotals(

@@ -6,6 +6,7 @@ import io.github.museakheeyyy.muse.desktop.state.app.UiState
 import io.github.museakheeyyy.muse.desktop.state.playback.PlayerState
 import io.github.museakheeyyy.muse.shared.cast.CastDevice
 import io.github.museakheeyyy.muse.shared.model.SongItem
+import io.github.museakheeyyy.muse.shared.model.isPodcast
 import io.github.museakheeyyy.muse.shared.model.playlistOccurrenceIdentity
 import io.github.museakheeyyy.muse.shared.ui.playback.PlaybackController
 import io.github.museakheeyyy.muse.shared.ui.playback.PlaybackListState
@@ -95,7 +96,17 @@ class DesktopPlaybackController(
         song: SongItem,
         queue: List<SongItem>,
         songsOnly: Boolean,
-    ) = PlayerState.playTrack(song, queue.ifEmpty { listOf(song) }, songsOnly = songsOnly)
+    ) {
+        if (startsLoneRadio(song, queue, songsOnly)) return PlayerState.playSongRadio(song)
+        PlayerState.playTrack(song, queue.ifEmpty { listOf(song) }, songsOnly = songsOnly)
+    }
+
+    // A lone song starts its radio like Start radio; podcast episodes and local files have none.
+    private fun startsLoneRadio(
+        song: SongItem,
+        queue: List<SongItem>,
+        songsOnly: Boolean,
+    ): Boolean = queue.isEmpty() && !songsOnly && !song.isPodcast && !song.isLocal && !song.id.startsWith("local_")
 
     override fun playAtGeneration(
         expectedGeneration: Long,
@@ -104,6 +115,7 @@ class DesktopPlaybackController(
         songsOnly: Boolean,
     ) {
         if (explicitPlaybackGeneration != expectedGeneration) return
+        if (startsLoneRadio(song, queue, songsOnly)) return PlayerState.playSongRadio(song)
         val replacementGeneration = playbackReplacementGeneration
         PlayerState.playTrack(
             song,

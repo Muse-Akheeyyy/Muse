@@ -10,9 +10,8 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.russhwolf.settings.get
-import com.russhwolf.settings.set
 import io.github.museakheeyyy.muse.shared.api.lyrics.AiProviderPresets
+import io.github.museakheeyyy.muse.shared.auth.hasSupportedYouTubeAuthCookie
 import io.github.museakheeyyy.muse.shared.backup.AutoBackupFrequency
 import io.github.museakheeyyy.muse.shared.constants.ActiveLyricsTextPositionKey
 import io.github.museakheeyyy.muse.shared.constants.AiSlopBlocklistCacheKey
@@ -139,6 +138,7 @@ import io.github.museakheeyyy.muse.shared.constants.LyricsPlusLighterKey
 import io.github.museakheeyyy.muse.shared.constants.LyricsProgressiveBlurKey
 import io.github.museakheeyyy.muse.shared.constants.LyricsShareImageStyleKey
 import io.github.museakheeyyy.muse.shared.constants.LyricsShowOriginalLyricsKey
+import io.github.museakheeyyy.muse.shared.constants.LyricsYoutubeCaptionsEnabledKey
 import io.github.museakheeyyy.muse.shared.constants.MatugenThemeKey
 import io.github.museakheeyyy.muse.shared.constants.MinimumSongDurationSecondsKey
 import io.github.museakheeyyy.muse.shared.constants.MusicVideoCacheJsonKey
@@ -218,6 +218,8 @@ import io.github.museakheeyyy.muse.shared.model.SortDirection
 import io.github.museakheeyyy.muse.shared.playback.SleepTimerDefaults
 import io.github.museakheeyyy.muse.shared.youtube.playback.PlaybackNetworkState
 import io.github.museakheeyyy.muse.shared.youtube.playback.PlaybackNetworkStateStore
+import com.russhwolf.settings.get
+import com.russhwolf.settings.set
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
 import kotlinx.serialization.Serializable
@@ -387,7 +389,7 @@ class Settings(
     val isPlayerCastButtonVisible: Boolean
         get() = castEnabled && showPlayerCastButton
     var playerBackgroundStyle by preference(PlayerBackgroundStyle.SOLID)
-    var sliderStyle by preference(SliderStyle.LINEAR_WAVY)
+    var sliderStyle by preference(SliderStyle.DEFAULT)
     var sliderTrackThicknessDp by preference(SliderTrackThicknessDpKey, 5f)
     var playbackSpeed by preference(PlaybackSpeedKey, 1f)
     var playbackPitch by preference(PlaybackPitchKey, 1f)
@@ -502,6 +504,7 @@ class Settings(
     var lyricsAutoScroll by preference(true)
     var lyricsProviderOrder by preference(LyricsProvider.userConfigurable.joinToString(",") { it.name })
     var lyricsEnabledProviders by preference("")
+    var lyricsYoutubeCaptionsEnabled by preference(LyricsYoutubeCaptionsEnabledKey, true)
     var preferWordSyncedLyrics by preference(PreferWordSyncedLyricsKey, false)
     var canvasContentOrder by preference(CanvasContentOrderKey, "YOUTUBE_MUSIC_VIDEO,SPOTIFY_CANVAS,APPLE_MUSIC")
     var canvasEnabledSources by preference(CanvasEnabledSourcesKey, "")
@@ -651,8 +654,8 @@ class Settings(
     var discordButton1Text by preference("Listen on YouTube Music")
     var discordButton1Url by preference("{song.url}")
     var discordButton2Enabled by preference(true)
-    var discordButton2Text by preference("Visit Muse")
-    var discordButton2Url by preference("https://github.com/Muse-Akheeyyy/Muse")
+    var discordButton2Text by preference("Visit Metrolist")
+    var discordButton2Url by preference("https://github.com/MetrolistGroup/Metrolist")
     var discordUsername by preference("")
     var discordName by preference("")
     var discordAvatar by preference("")
@@ -714,6 +717,9 @@ class Settings(
     var swipeToRemoveFromQueue by preference(SwipeToRemoveFromQueueKey, false)
     var autoLoadMore by preference(true)
     var classicRecommendations by preference(ClassicRecommendationsKey, false)
+    val useLocalHomeRecommendations: Boolean
+        get() = classicRecommendations || !hasSupportedYouTubeAuthCookie(innerTubeCookie)
+
     var disableLoadMoreWhenRepeatAll by preference(false)
     var preventDuplicateTracksInQueue by preference(false)
     var innerTubeCookie by preference("")

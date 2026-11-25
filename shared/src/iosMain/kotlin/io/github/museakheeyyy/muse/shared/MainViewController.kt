@@ -73,7 +73,9 @@ import io.github.museakheeyyy.muse.shared.playlist.removeStoredPlaylistCover
 import io.github.museakheeyyy.muse.shared.playlist.setStoredPlaylistCover
 import io.github.museakheeyyy.muse.shared.playlist.storeIosPlaylistCover
 import io.github.museakheeyyy.muse.shared.playlist.uploadStoredPlaylistCover
+import io.github.museakheeyyy.muse.shared.settings.LibraryFilterType
 import io.github.museakheeyyy.muse.shared.settings.Settings
+import io.github.museakheeyyy.muse.shared.settings.defaultOpenTabRoot
 import io.github.museakheeyyy.muse.shared.state.GlobalYouTubeRepository
 import io.github.museakheeyyy.muse.shared.state.SongLikeState
 import io.github.museakheeyyy.muse.shared.state.SongMetadataState
@@ -169,6 +171,11 @@ fun handleOpenUrl(url: String) {
 @Composable
 fun MetrolistIOSApp() {
     val scope = rememberCoroutineScope()
+    remember {
+        if (defaultOpenTabRoot(Settings.shared.defaultOpenTab) == "LIBRARY") {
+            Settings.shared.libraryFilter = LibraryFilterType.DEFAULT
+        }
+    }
     val presenter = LocalUIViewController.current
     DisposableEffect(Unit) {
         val networkMonitor = IosPlaybackNetworkMonitor()
@@ -313,6 +320,9 @@ fun MetrolistIOSApp() {
 
     suspend fun reopenDatabaseAfterRestore() {
         MetrolistPlatform.reopenDatabaseAfterRestore()
+        if (defaultOpenTabRoot(Settings.shared.defaultOpenTab) == "LIBRARY") {
+            Settings.shared.libraryFilter = LibraryFilterType.DEFAULT
+        }
         databaseGeneration++
         sessionClosed = false
         pendingMobileDispose = null
@@ -386,6 +396,9 @@ fun MetrolistIOSApp() {
                     if (sessionClosed) reopenDatabaseAfterRestore()
                     if (databaseGeneration == generationBeforeRestore && result.isSuccess) {
                         MetrolistPlatform.refreshRestoredSettings()
+                        if (defaultOpenTabRoot(Settings.shared.defaultOpenTab) == "LIBRARY") {
+                            Settings.shared.libraryFilter = LibraryFilterType.DEFAULT
+                        }
                         appGeneration++
                     }
                     backupFailure = result.exceptionOrNull()
@@ -476,7 +489,7 @@ fun MetrolistIOSApp() {
                     if (isCrashReportingAvailable()) Settings.shared.sentryEnabled = consent
                     Settings.shared.iosOnboardingComplete = true
                     showOnboarding = false
-                    if (login) handleOpenUrl("muse://login")
+                    if (login) handleOpenUrl("metrolist://login")
                     if (restore) initialSettingsPage = SettingsPageId.BACKUP_RESTORE
                 }
             }

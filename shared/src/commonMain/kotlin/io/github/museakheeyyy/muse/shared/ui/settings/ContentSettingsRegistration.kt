@@ -26,6 +26,7 @@ import io.github.museakheeyyy.muse.shared.settings.AiSlopBlocklist
 import io.github.museakheeyyy.muse.shared.settings.BlockedContent
 import io.github.museakheeyyy.muse.shared.settings.Settings
 import io.github.museakheeyyy.muse.shared.settings.SongShareLink
+import io.github.museakheeyyy.muse.shared.settings.updateDefaultOpenTab
 import io.github.museakheeyyy.muse.shared.ui.icons.MetrolistIcons
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
@@ -201,6 +202,9 @@ internal fun SettingsUiRegistryBuilder.registerContentSettings(host: SharedSetti
                 checked = settings.hidePodcasts,
             ) {
                 settings.hidePodcasts = it
+                if (it && settings.defaultOpenTab == "PODCASTS") {
+                    settings.updateDefaultOpenTab("LIBRARY")
+                }
                 BlockedContent.contentFiltersChanged()
                 host.onSettingChanged(SettingsChangeEffect.CONTENT, null)
             }

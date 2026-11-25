@@ -2,6 +2,7 @@ package io.github.museakheeyyy.muse.android.data
 
 import androidx.room3.useReaderConnection
 import androidx.sqlite.SQLiteStatement
+import io.github.museakheeyyy.muse.shared.api.lastfm.LastFmListen
 import io.github.museakheeyyy.muse.shared.db.HISTORY_SNAPSHOT_ARTIST_MATCH_SQL
 import io.github.museakheeyyy.muse.shared.db.HistoryCursor
 import io.github.museakheeyyy.muse.shared.db.HistoryStatGroup
@@ -29,6 +30,8 @@ import io.github.museakheeyyy.muse.shared.db.withDatabaseTransaction
 import io.github.museakheeyyy.muse.shared.model.HistorySortMode
 import io.github.museakheeyyy.muse.shared.model.SongItem
 import io.github.museakheeyyy.muse.shared.model.SortDirection
+import io.github.museakheeyyy.muse.shared.model.isNonMusicalVideo
+import io.github.museakheeyyy.muse.shared.model.isPodcast
 import io.github.museakheeyyy.muse.shared.settings.BlockedContent
 import io.github.museakheeyyy.muse.shared.settings.Settings
 import io.github.museakheeyyy.muse.shared.state.GlobalYouTubeRepository
@@ -204,7 +207,8 @@ class PlayHistoryRepository(
     suspend fun getStatisticsSnapshot(
         sinceMs: Long,
         untilMs: Long,
-    ) = database.historyStatisticsSnapshot(sinceMs, untilMs, catalogArtistIds = true)
+        lastFm: List<LastFmListen> = emptyList(),
+    ) = database.historyStatisticsSnapshot(sinceMs, untilMs, catalogArtistIds = true, lastFm = lastFm)
 
     suspend fun getHistoryTotals(
         sinceMs: Long,
@@ -323,12 +327,12 @@ class PlayHistoryRepository(
             song.artists.size,
         )
         // Keep the optional network fetch out of the ordered history writes.
-        if (Settings.shared.classicRecommendations) {
+        if (Settings.shared.useLocalHomeRecommendations) {
             relatedSongsScope.launch { recordRelatedSongs(song.id) }
         }
     }
 
-    /** Stores the songs YouTube relates to [songId], feeding the classic local Quick picks. */
+    /** Stores the songs YouTube relates to [songId] for history-based Quick picks. */
     private suspend fun recordRelatedSongs(songId: String) {
         // Local files have no YouTube watch id, so their relations cannot be fetched.
         if (songId.startsWith("local_")) return
@@ -337,7 +341,7 @@ class PlayHistoryRepository(
             val related =
                 GlobalYouTubeRepository.instance
                     .startRadio(songId)
-                    .filter { it.id.isNotBlank() && it.id != songId }
+                    .filter { it.id.isNotBlank() && it.id != songId && !it.isNonMusicalVideo && !it.isPodcast }
                     .distinctBy { it.id }
                     .take(RELATED_SONGS_LIMIT)
             if (related.isEmpty()) return

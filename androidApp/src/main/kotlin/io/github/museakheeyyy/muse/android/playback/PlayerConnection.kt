@@ -27,6 +27,7 @@ import io.github.museakheeyyy.muse.shared.generated.resources.playlist_unavailab
 import io.github.museakheeyyy.muse.shared.model.RadioQueueChip
 import io.github.museakheeyyy.muse.shared.model.SongItem
 import io.github.museakheeyyy.muse.shared.model.isLive
+import io.github.museakheeyyy.muse.shared.model.isPodcast
 import io.github.museakheeyyy.muse.shared.playback.MusicQueue
 import io.github.museakheeyyy.muse.shared.playback.MusicQueueSnapshot
 import io.github.museakheeyyy.muse.shared.playback.MusicQueueState
@@ -690,7 +691,8 @@ class PlayerConnection(
                     DcPlaybackAction.REPLACE_QUEUE,
                     songs = listOf(song),
                     index = 0,
-                    finite = true,
+                    finite = !song.startsRadio,
+                    explicitRadioQueue = song.startsRadio,
                     positionMs = startPositionMs,
                 ),
             )
@@ -715,7 +717,14 @@ class PlayerConnection(
         startVideo: Boolean = false,
     ) {
         if (deferUntilConnected { playSongInternal(song, url, startPositionMs, startVideo) }) return
-        if (url.isBlank()) {
+        if (url.isBlank() && song.startsRadio) {
+            musicService?.playSongRadio(
+                song,
+                startPositionMs = startPositionMs,
+                startPlaying = localSongChangeStartsPlayback(),
+                startVideo = startVideo,
+            )
+        } else if (url.isBlank()) {
             musicService?.playQueue(
                 listOf(song),
                 finite = true,
@@ -727,6 +736,9 @@ class PlayerConnection(
             musicService?.player?.play(song, url, startPlaying = localSongChangeStartsPlayback())
         }
     }
+
+    // Podcast episodes and local files have no YouTube radio to follow them.
+    private val SongItem.startsRadio: Boolean get() = !isPodcast && !isLocal && !id.startsWith("local_")
 
     fun playNext(song: SongItem) {
         addToQueue(song, playNext = true)

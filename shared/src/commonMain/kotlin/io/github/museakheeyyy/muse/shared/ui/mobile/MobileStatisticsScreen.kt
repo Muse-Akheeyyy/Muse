@@ -14,10 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import io.github.museakheeyyy.muse.shared.api.lastfm.LastFmHistoryCache
 import io.github.museakheeyyy.muse.shared.db.HistoryStatisticsSnapshot
 import io.github.museakheeyyy.muse.shared.db.MusicDatabase
 import io.github.museakheeyyy.muse.shared.db.historyChanges
 import io.github.museakheeyyy.muse.shared.db.historySong
+import io.github.museakheeyyy.muse.shared.db.historyStatisticsSnapshot
+import io.github.museakheeyyy.muse.shared.db.isPlayable
 import io.github.museakheeyyy.muse.shared.db.mobileHistoryStatisticsSnapshot
 import io.github.museakheeyyy.muse.shared.db.statisticsSongs
 import io.github.museakheeyyy.muse.shared.generated.resources.Res
@@ -39,7 +42,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
-import kotlin.time.Clock
 
 @Composable
 internal fun MobileStatisticsScreen(
@@ -72,7 +74,21 @@ internal fun MobileStatisticsScreen(
             isLoading = true
             loadFailed = false
             try {
-                snapshot = database.loadMobileStatistics(period, dateRange = dateRange, mode = mode)
+                val range = period.epochRange(dateRange, mode = mode)
+                snapshot = database.mobileHistoryStatisticsSnapshot(range.first, range.second)
+                isLoading = false
+                // Last.fm can take a while for long periods, so local numbers show first.
+                val lastFm = LastFmHistoryCache.listens(range.first, range.second)
+                if (lastFm.isNotEmpty()) {
+                    val merged = database.historyStatisticsSnapshot(range.first, range.second, catalogArtistIds = true, lastFm = lastFm)
+                    // Keep the mobile ranking basis (listening time); stable sorting leaves play-count order for ties.
+                    snapshot =
+                        merged.copy(
+                            songs = merged.songs.sortedByDescending { it.playTimeMs },
+                            artists = merged.artists.sortedByDescending { it.playTimeMs },
+                            albums = merged.albums.sortedByDescending { it.playTimeMs },
+                        )
+                }
             } catch (error: CancellationException) {
                 throw error
             } catch (error: Exception) {
@@ -113,6 +129,7 @@ internal fun MobileStatisticsScreen(
                             rankedTitle = "${index + 1}. ${song.title}",
                             subtitle = statisticsPlayCountDuration(count, song.playTimeMs),
                             thumbnailUrl = song.thumbnailUrl,
+                            isClickable = song.isPlayable,
                         )
                     },
                 albums =
@@ -210,7 +227,8 @@ internal fun MobileStatisticsScreen(
                 }
             }
         },
-        onItemMenu = { item ->
+        onItemMenu = menu@{ item ->
+            if (item.id.startsWith("track:") && !item.isClickable) return@menu
             menuJob?.cancel()
             menuJob =
                 scope.launch {
@@ -252,14 +270,4 @@ internal fun MobileStatisticsScreen(
         bottomContentPadding = bottomContentPadding,
         modifier = modifier,
     )
-}
-
-internal suspend fun MusicDatabase.loadMobileStatistics(
-    period: StatisticsPeriod,
-    clock: Clock = Clock.System,
-    dateRange: StatisticsDateRange? = null,
-    mode: StatisticsPeriodMode = StatisticsPeriodMode.CONTINUOUS,
-): HistoryStatisticsSnapshot {
-    val range = period.epochRange(dateRange, clock, mode = mode)
-    return mobileHistoryStatisticsSnapshot(range.first, range.second)
 }

@@ -21,6 +21,7 @@ import io.github.museakheeyyy.muse.shared.model.RepeatMode
 import io.github.museakheeyyy.muse.shared.model.SongItem
 import io.github.museakheeyyy.muse.shared.model.buildRadioQueueRecommendations
 import io.github.museakheeyyy.muse.shared.model.canSwitchToMusicVideo
+import io.github.museakheeyyy.muse.shared.model.isNonMusicalVideo
 import io.github.museakheeyyy.muse.shared.model.isPodcast
 import io.github.museakheeyyy.muse.shared.model.isVideoSong
 import io.github.museakheeyyy.muse.shared.model.selectRadioQueueChip
@@ -999,8 +1000,11 @@ internal class IosPlaybackController(
     ) {
         val songs = queue.ifEmpty { listOf(song) }
         val index = songs.indexOfFirst { it === song }.takeIf { it >= 0 } ?: songs.indexOf(song).coerceAtLeast(0)
-        play(song, queue, songsOnly, index)
+        play(song, if (song.startsRadio) queue else songs, songsOnly, index)
     }
+
+    // Podcast episodes and local files have no YouTube radio, so they stay a finite single-item queue.
+    private val SongItem.startsRadio: Boolean get() = !isPodcast && !isLocal && !id.startsWith("local_")
 
     private fun play(
         song: SongItem,
@@ -1016,7 +1020,7 @@ internal class IosPlaybackController(
         recommendationsSongsOnly = songsOnly
         isFiniteQueue = queue.isNotEmpty()
         val selectedSong = requestPlayback(song, songs, index, startPlaying = localSongChangeStartsPlayback(), shuffle = shuffle) ?: return
-        if (queue.size <= 1) bootstrapRecommendations(selectedSong.id)
+        if (queue.size <= 1 && selectedSong.startsRadio) bootstrapRecommendations(selectedSong.id)
     }
 
     override fun playQueue(
@@ -1770,10 +1774,10 @@ internal class IosPlaybackController(
             logIosPlaybackError("Failed to record local play for ${song.id}", error)
             Logger.w("IosPlaybackController", "Failed to record local play id=${song.id}")
         }
-        if (Settings.shared.classicRecommendations) recordRelatedSongs(song.id)
+        if (Settings.shared.useLocalHomeRecommendations) recordRelatedSongs(song.id)
     }
 
-    /** Stores the songs YouTube relates to [songId], feeding the classic local Quick picks. */
+    /** Stores the songs YouTube relates to [songId] for history-based Quick picks. */
     private suspend fun recordRelatedSongs(songId: String) {
         // Local files have no YouTube watch id, so their relations cannot be fetched.
         if (songId.startsWith("local_")) return
@@ -1783,7 +1787,7 @@ internal class IosPlaybackController(
             val related =
                 repository()
                     .startRadio(songId)
-                    .filter { it.id.isNotBlank() && it.id != songId }
+                    .filter { it.id.isNotBlank() && it.id != songId && !it.isNonMusicalVideo && !it.isPodcast }
                     .distinctBy { it.id }
                     .take(RELATED_SONGS_LIMIT)
             if (related.isEmpty()) return

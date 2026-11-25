@@ -27,6 +27,7 @@ import io.github.museakheeyyy.muse.shared.db.HistoryAlbumStatistic
 import io.github.museakheeyyy.muse.shared.db.HistoryArtistStatistic
 import io.github.museakheeyyy.muse.shared.db.HistoryStatGroup
 import io.github.museakheeyyy.muse.shared.db.MusicDatabase
+import io.github.museakheeyyy.muse.shared.db.isPlayable
 import io.github.museakheeyyy.muse.shared.generated.resources.Res
 import io.github.museakheeyyy.muse.shared.generated.resources.share
 import io.github.museakheeyyy.muse.shared.generated.resources.statistics_load_failed
@@ -200,6 +201,7 @@ private fun HistoryStatGroup.toStatisticsItem(index: Int) =
         rankedTitle = "${index + 1}. $title",
         subtitle = statisticsPlayCountDuration(playCount, playTimeMs),
         thumbnailUrl = thumbnailUrl,
+        isClickable = isPlayable,
     )
 
 @Composable
@@ -312,7 +314,8 @@ private fun rememberStatisticsItemMenu(
             else -> {}
         }
     }
-    return { item ->
+    return menu@{ item ->
+        if (item.id.startsWith("track:") && !item.isClickable) return@menu
         menuJob?.cancel()
         menuJob =
             scope.launch {
