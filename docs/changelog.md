@@ -1,3 +1,16 @@
+---v1.0.4
+# Muse 1.0.4
+Syncs the app with upstream through 25 November.
+
+## Highlights
+- Statistics include Last.fm scrobbles
+- New equalizer presets (Commute, Loudness, Pop, Electronic, Acoustic) with peak protection
+- Downloads and Podcasts can be set as the default open tab
+- Shizuku and root in-app updates, song.link sharing and a custom ListenBrainz server
+- Swipe to remove from the queue, and Start radio from a single song or an album track
+- YouTube captions can be turned off in the lyrics menu, and recent searches clear immediately
+- Playback, queue, login, canvas and colour fixes, including keeping the queue after a paused notification is dismissed
+
 ---v1.0.3
 # Muse 1.0.3
 Third maintenance release.
