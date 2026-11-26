@@ -7,6 +7,7 @@ import io.github.museakheeyyy.muse.shared.api.YouTubeResponseParser.findAllObjec
 import io.github.museakheeyyy.muse.shared.api.YouTubeResponseParser.primitiveText
 import io.github.museakheeyyy.muse.shared.model.SongItem
 import io.github.museakheeyyy.muse.shared.state.SongLikeState
+import io.github.museakheeyyy.muse.shared.youtube.logging.YtLogger
 import io.ktor.client.statement.HttpResponse
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.withContext
@@ -119,13 +120,20 @@ internal suspend fun HttpResponse.browseResponseWithVotes(
     revision: Long,
     authenticated: Boolean = true,
     allowVisitorBootstrap: Boolean = false,
+    onAuthenticationRejected: suspend (InnerTube.SessionSnapshot) -> Unit,
 ): BrowseResponse =
     withContext(responseDecodeDispatcher) {
         val raw = bodyLimited<JsonObject>(FEED_RESPONSE_LIMIT)
-        if (innerTube.sessionSnapshot() != session && !(allowVisitorBootstrap && innerTube.acceptsHomeVisitorBootstrap(session))) {
+        val responseSession = innerTube.sessionSnapshot()
+        if (responseSession != session && !(allowVisitorBootstrap && innerTube.acceptsHomeVisitorBootstrap(session))) {
             throw CancellationException("YouTube session changed")
         }
         if (authenticated && innerTube.hasSapCookieAuth(session)) {
+            if (raw.isYouTubeLoggedOut()) {
+                YtLogger.w("YouTubeRepository", "Authenticated browse returned a signed-out response status=${status.value}")
+                onAuthenticationRejected(responseSession)
+                throw YouTubeSessionExpiredException()
+            }
             reconcileSongVotes(raw, revision)
         }
         repositoryJson.decodeFromJsonElement<BrowseResponse>(raw)
