@@ -515,7 +515,7 @@ class LegacySettingsMigrationTest {
         assertEquals(73f, settings.swipeSensitivity)
         assertEquals(PlayerBackgroundStyle.SOLID, settings.playerBackgroundStyle)
         assertEquals("SOLID_BLACK", settings.miniPlayerBackgroundStyle)
-        assertEquals(SliderStyle.LINEAR_WAVY, settings.sliderStyle)
+        assertEquals(SliderStyle.DEFAULT, settings.sliderStyle)
         assertEquals(PlayerType.VINTAGE, settings.playerType)
         assertEquals(MiniPlayerType.MODERN, settings.miniPlayerType)
         assertTrue(settings.hideShortSongs)
