@@ -1,3 +1,17 @@
+---v1.0.5
+# Muse 1.0.5
+Syncs the app with upstream through 26 November.
+
+## Highlights
+- Library shelves animate layout and column transitions
+- Home speed dial reshuffles on refresh, and signed-out YouTube Music shows the signed-out state instead of an empty feed
+- Downloaded songs keep their artwork while offline
+- Listen Together guests stay in sync and suggestions stay reliable
+- Spotify Canvas lookups retry without an album match
+- Manual lyrics sources render correctly in the settings column
+- Audio focus is checked against the raw app-op mode
+- Builds now require Java 25.0.5.1 (CVE-2026-114938)
+
 ---v1.0.4
 # Muse 1.0.4
 Syncs the app with upstream through 25 November.
