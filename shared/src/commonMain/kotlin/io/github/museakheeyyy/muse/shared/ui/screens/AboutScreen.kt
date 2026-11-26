@@ -260,7 +260,6 @@ fun AboutScreen(
                         .clickable(role = Role.Button, onClickLabel = text.license) { openCommunityLink(aboutLicenseLink) }
                         .padding(16.dp),
             )
-
         }
     }
 
