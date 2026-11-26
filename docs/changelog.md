@@ -1,3 +1,11 @@
+---v1.0.6
+# Muse 1.0.6
+## Highlights
+- New installs open the player with blurred artwork and the wavy seek bar
+
+## Notes
+- Existing installs keep their current player background and seek bar
+
 ---v1.0.5
 # Muse 1.0.5
 Syncs the app with upstream through 26 November.

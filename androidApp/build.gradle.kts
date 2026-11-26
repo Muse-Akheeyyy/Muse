@@ -264,7 +264,7 @@ android {
         applicationId = "io.github.museakheeyyy.muse"
         minSdk = 24
         targetSdk = 37
-        versionCode = 6
+        versionCode = 7
         versionName = appVersion
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
