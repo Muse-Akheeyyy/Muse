@@ -388,8 +388,8 @@ class Settings(
 
     val isPlayerCastButtonVisible: Boolean
         get() = castEnabled && showPlayerCastButton
-    var playerBackgroundStyle by preference(PlayerBackgroundStyle.SOLID)
-    var sliderStyle by preference(SliderStyle.DEFAULT)
+    var playerBackgroundStyle by preference(PlayerBackgroundStyle.BLURRED_ARTWORK)
+    var sliderStyle by preference(SliderStyle.LINEAR_WAVY)
     var sliderTrackThicknessDp by preference(SliderTrackThicknessDpKey, 5f)
     var playbackSpeed by preference(PlaybackSpeedKey, 1f)
     var playbackPitch by preference(PlaybackPitchKey, 1f)
