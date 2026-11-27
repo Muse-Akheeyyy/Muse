@@ -7,11 +7,11 @@ package io.github.museakheeyyy.muse.desktop.state.app
 
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
-import dev.nucleusframework.share.ShareException
-import dev.nucleusframework.share.ShareSheet
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.Clipboard
+import dev.nucleusframework.share.ShareException
+import dev.nucleusframework.share.ShareSheet
 import io.github.museakheeyyy.muse.desktop.state.content.SearchState
 import io.github.museakheeyyy.muse.desktop.update.DesktopUpdateManager
 import io.github.museakheeyyy.muse.desktop.update.GitHubDesktopRelease
