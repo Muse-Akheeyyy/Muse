@@ -274,7 +274,7 @@ CI runs the cheap repository checks in its selection job on every push and PR, i
 
 `test_dmg_packaging.py` runs the production DMG task in an isolated Gradle build with mocked macOS tools. It checks both artwork updates, a single conversion cycle, and cleanup after tool and detach failures. It also checks target selection, release JAR trimming and loose Skiko natives for native and cross-architecture builds on simulated Apple Silicon and Intel hosts. `test_macos_packaging.py` rejects bundles whose configured Skiko library path has no matching loose dylib. Set `GRADLE` to use a different Gradle executable. Verify the real Finder layout and volume icon on macOS before release.
 
-The escape check rejects Android-only `\'` and `%%`, which Compose renders literally. The Weblate workflow and pruning are described in [strings.md](strings.md). Dictionary verification commands are in [romanization.md](romanization.md#verification).
+The escape check rejects Android-only `\'` and `%%`, which Compose renders literally. The translation check ignores locale keys the base catalog no longer has, because Weblate's cleanup add-on removes them. The Weblate workflow and pruning are described in [strings.md](strings.md). Dictionary verification commands are in [romanization.md](romanization.md#verification).
 
 ## Hooks
 

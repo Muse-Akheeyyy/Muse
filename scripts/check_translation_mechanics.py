@@ -127,7 +127,8 @@ def catalog_errors(catalog, base, directory):
     for name, element in catalog.items():
         reference = base.get(name)
         if reference is None:
-            yield f"{name}: resource is absent from the base catalog"
+            # Weblate owns locale catalogs and its cleanup add-on drops keys
+            # removed from the base catalog, so stale locale keys are expected.
             continue
         if name.startswith("crash_") or name == "database_downgrade":
             if reference.get("translatable") != "false":
