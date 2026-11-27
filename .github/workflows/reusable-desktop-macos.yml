@@ -56,16 +56,18 @@ jobs:
   package:
     name: ${{ matrix.arch }}
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 35
+    # Standard macOS runners are a 3-core M1 with 7 GB, roughly half the old
+    # 6-vCPU tier, so packaging gets a longer budget than the old 35 minutes.
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:
         include:
           - arch: arm64
-            runner: blacksmith-6vcpu-macos-15
+            runner: macos-15
             native_arch: arm64
           - arch: x64
-            runner: ${{ inputs.x64-use-intel-runner && 'macos-15-intel' || 'blacksmith-6vcpu-macos-15' }}
+            runner: ${{ inputs.x64-use-intel-runner && 'macos-15-intel' || 'macos-15' }}
             native_arch: x86_64
     steps:
       - name: Check out repository

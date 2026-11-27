@@ -13,8 +13,8 @@ concurrency:
 jobs:
   flatpak:
     name: Validate Flatpak manifest
-    runs-on: blacksmith-2vcpu-ubuntu-2604
-    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: read
     steps:

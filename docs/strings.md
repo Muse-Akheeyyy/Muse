@@ -43,4 +43,4 @@ python3 scripts/test_find_unused_strings.py
 python3 scripts/test_generate_android_strings.py
 ```
 
-The last command runs an isolated Gradle build. Set `GRADLE` to use an executable other than `./gradlew`. The [pre-commit hook](checks.md#hooks) checks staged XML, including malformed XML, without reading unstaged edits.
+The last command runs an isolated Gradle build. Set `GRADLE` to use an executable other than `./gradlew`. The mechanics check validates only keys the base catalog defines; a locale key retired from the base catalog is left for Weblate's cleanup add-on and does not fail the check. The [pre-commit hook](checks.md#hooks) checks staged XML, including malformed XML, without reading unstaged edits.

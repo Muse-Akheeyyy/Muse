@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.window.WindowState
+import dev.nucleusframework.window.tao.TaoWindow
 import io.github.museakheeyyy.muse.desktop.state.app.DesktopNavigation
 import io.github.museakheeyyy.muse.desktop.state.app.UiState
 import io.github.museakheeyyy.muse.desktop.state.playback.ListenTogetherState
@@ -34,7 +35,6 @@ import io.github.museakheeyyy.muse.shared.settings.Settings
 import io.github.museakheeyyy.muse.shared.settings.displayName
 import io.github.museakheeyyy.muse.shared.ui.navigation.Screen
 import io.github.museakheeyyy.muse.shared.utils.OsUtil
-import dev.nucleusframework.window.tao.TaoWindow
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

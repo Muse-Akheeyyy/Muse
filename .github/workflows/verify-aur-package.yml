@@ -9,9 +9,9 @@ concurrency:
 
 jobs:
   package:
-    runs-on: blacksmith-4vcpu-ubuntu-2604
+    runs-on: ubuntu-latest
     container: archlinux:base-devel
-    timeout-minutes: 60
+    timeout-minutes: 90
     permissions:
       contents: read
     env:

@@ -110,6 +110,8 @@ class TranslationMechanicsTest(unittest.TestCase):
             locale.write_text('<resources/>')
             self.assertEqual([], list(translation_errors(resources)))
             self.assertEqual({'values-fr': ['label']}, missing_translations(resources))
+            locale.write_text('<resources><string name="label">Label</string><string name="retired">Retired</string></resources>')
+            self.assertEqual([], list(translation_errors(resources)))
             locale.write_text('<resources><string name="label">A</string><string name="label">B</string></resources>')
             self.assertTrue(any('duplicate resource' in error for error in translation_errors(resources)))
             locale.write_text('<resources>')

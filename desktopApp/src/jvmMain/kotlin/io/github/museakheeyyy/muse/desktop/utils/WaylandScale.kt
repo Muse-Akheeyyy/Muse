@@ -9,6 +9,7 @@ import com.sun.jna.Library
 import com.sun.jna.Native
 import io.github.museakheeyyy.muse.shared.settings.Settings
 import io.github.museakheeyyy.muse.shared.utils.XdgUtils
+import io.github.museakheeyyy.muse.shared.utils.headlessDisplaySizes
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject

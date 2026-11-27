@@ -19,11 +19,11 @@ import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberDialogState
 import androidx.compose.ui.window.rememberWindowState
-import io.github.museakheeyyy.muse.desktop.utils.WaylandScale
 import dev.nucleusframework.window.tao.DecoratedDialog
 import dev.nucleusframework.window.tao.DecoratedWindow
 import dev.nucleusframework.window.tao.TaoWindow
 import dev.nucleusframework.window.tao.taoApplication
+import io.github.museakheeyyy.muse.desktop.utils.WaylandScale
 import kotlinx.coroutines.Dispatchers
 import java.awt.EventQueue
 import javax.swing.JDialog
