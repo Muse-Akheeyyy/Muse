@@ -49,6 +49,7 @@ import io.github.museakheeyyy.muse.shared.constants.BlockAiSlopArtistsKey
 import io.github.museakheeyyy.muse.shared.constants.BlockedArtistsUndoHintShownKey
 import io.github.museakheeyyy.muse.shared.constants.BlockedSongsUndoHintShownKey
 import io.github.museakheeyyy.muse.shared.constants.BlockedUsersUndoHintShownKey
+import io.github.museakheeyyy.muse.shared.constants.CacheWholeSongWhilePlayingKey
 import io.github.museakheeyyy.muse.shared.constants.CachedCollectionSortDirectionKey
 import io.github.museakheeyyy.muse.shared.constants.CachedCollectionSortKey
 import io.github.museakheeyyy.muse.shared.constants.CachedSongsCustomOrderKey
@@ -608,6 +609,7 @@ class Settings(
 
     var songCacheEnabled by preference(false)
     var maxSongCacheSize by preference(1024)
+    var cacheWholeSongWhilePlaying by preference(CacheWholeSongWhilePlayingKey, false)
     var maxImageCacheSize by preference(512)
     var audioCacheLocation by preference("INTERNAL")
     var downloadLocation by preference("INTERNAL")
