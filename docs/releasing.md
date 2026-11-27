@@ -40,13 +40,13 @@ build must use it: changing the key breaks in-place updates. The keystore is bac
 encrypted in the private repository `Muse-Akheeyyy/muse-signing`. After changing any
 secret, verify a built APK with `apksigner verify --print-certs` before publishing.
 
-## Local smoke build
+## Builds run in CI
 
-`build-release.ps1` in the workspace root builds the same variant on this machine with
-`signing\muse-release.jks` and copies the result to `Muse-release.apk`. It only proves the
-tree compiles and signs, and it reuses the existing build directory, so clear
-`shared\build` and `androidApp\build` first if the output looks oversized. Do not upload a
-local APK: the tag build is the artifact users install.
+Do not build on the local machine. The tag workflow is the only build that produces the
+released APK, and PR CI is the only verification. To install an unreleased build on a
+device, dispatch the **Build Android** workflow with variant `debug` (or `release`) and
+install its artifact with `adb install -r Muse-debug.apk`. Never upload a locally built APK: the CI
+build is the artifact users install.
 
 ## Retries
 

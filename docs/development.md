@@ -27,6 +27,9 @@ Install the Android SDK required by `androidApp/build.gradle.kts`, accept its li
 
 ## Build and run
 
+These commands are for human developers. Agents must not run them; see
+[Builds run on GitHub](../AGENTS.md#builds-run-on-github).
+
 ### Android
 
 ```bash
