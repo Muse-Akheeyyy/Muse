@@ -29,6 +29,7 @@ import androidx.core.content.edit
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
 import io.github.museakheeyyy.muse.android.backup.BackupRestoreManager
+import io.github.museakheeyyy.muse.android.carlights.CarLights
 import io.github.museakheeyyy.muse.android.deviceconnect.AndroidDeviceConnect
 import io.github.museakheeyyy.muse.android.di.appModule
 import io.github.museakheeyyy.muse.android.locale.AppLocale
@@ -38,6 +39,7 @@ import io.github.museakheeyyy.muse.android.onboarding.shouldApplyTvContinuePlayb
 import io.github.museakheeyyy.muse.android.playback.AudioCacheManager
 import io.github.museakheeyyy.muse.android.playback.DownloadService
 import io.github.museakheeyyy.muse.android.playback.MusicService
+import io.github.museakheeyyy.muse.android.playback.PlayerConnection
 import io.github.museakheeyyy.muse.android.playback.SongDownloadManager
 import io.github.museakheeyyy.muse.android.playlistimport.AndroidPlaylistImportNotifier
 import io.github.museakheeyyy.muse.android.quicksettings.MusicRecognizerTileService
@@ -314,6 +316,12 @@ class App :
             modules(coreModule, sharedModule, appModule)
         }
         Timber.tag(TAG).d("Koin init complete elapsed=%dms", SystemClock.elapsedRealtime() - koinStart)
+        CarLights.start(
+            context = this,
+            applicationScope = get<CoroutineScope>(),
+            playerConnection = { get<PlayerConnection>() },
+            imageLoader = { get<ImageLoader>() },
+        )
 
         get<CoroutineScope>().launch(Dispatchers.Main.immediate) {
             observeDiscordInitialization {
