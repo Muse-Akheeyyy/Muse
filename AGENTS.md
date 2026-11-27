@@ -14,16 +14,26 @@ Muse is a YouTube Music client for Android, desktop and iOS.
 - Never force push to `main`. On other branches, use `--force-with-lease` when an authorized history rewrite requires a force push.
 - Prefer a PR over a direct push to the target branch, including when write permissions allow direct pushes. Permission to write is not permission to bypass review.
 - Do **not** bump app version
-- Build before requesting review; ask humans when requirements are unclear
+- Never build locally; see [Builds run on GitHub](#builds-run-on-github). Ask humans when requirements are unclear
 - Match existing code style; comment only non-obvious logic
 - Do **not** use hardcoded English (`"en"`) or country (`"US"`) defaults. Always derive locale from system locale, user settings, or resource directories. Never silently fall back to English.
+
+## Builds run on GitHub
+
+The local machine is for editing code and running git only. Never build, lint or test locally.
+
+- Do not run `./gradlew`, `gradle.ps1`, `build-release.ps1`, `:androidApp:assembleDebug`, `:androidApp:assembleRelease`, `lint`, `test` or any packaging task on this machine.
+- CI is the only verification. Push the branch and watch it with `gh pr checks --watch`. Never report a check as passing until that job is green.
+- To test on a device, dispatch the **Build Android** workflow with variant `debug` and install the uploaded artifact with `adb install -r Muse-debug.apk`. Do not build an APK locally.
+- The only local command allowed on changed code is `ktlint --format`, because CI checks formatting but never fixes it.
+- Only an explicit human request can override this rule.
 
 ## Releases
 
 Android releases are published by GitHub Actions from `v*.*.*` tags: bump `appVersion` and
 `versionCode`, add a `---vX.Y.Z` changelog entry, push `main`, push the tag. Read
-[releasing](docs/releasing.md) before release work. Do not upload locally built APKs to a
-release; the CI build is the artifact users install.
+[releasing](docs/releasing.md) before release work. The CI build is the artifact users
+install; never build or upload an APK from the local machine.
 
 ## Rejected features
 
@@ -130,9 +140,9 @@ If a change breaks an existing test that falls outside the list, delete that tes
 ## Verify and report
 
 - Follow [Tests](#tests). Do not add or maintain coded UI tests.
-- Build affected code and run relevant [checks](docs/checks.md) before review. Fix failures you introduce; report unrelated blockers without expanding scope.
+- Verification runs on GitHub, not on the local machine; see [Builds run on GitHub](#builds-run-on-github). Fix failures you introduce; report unrelated blockers without expanding scope.
 - After pushing, check the PR's CI jobs. A failing job is a real result: fix it, or report the job, failing step and log excerpt. Do not describe a failing or unfinished job as passing, absent or irrelevant, even when the failure comes from the base branch.
-- Format changed Kotlin with `ktlint --format`. Documentation-only edits need link checks and `git diff --check`, not an app rebuild.
+- Format changed Kotlin with `ktlint --format` before pushing; CI only checks formatting, it never fixes it. Documentation-only edits need link checks and `git diff --check`, not an app rebuild.
 - Live YouTube tests are opt-in and never run in CI. Ask for device or emulator testing when backend checks are insufficient.
 - Review the final diff for unrelated changes, debug code and secrets. Report actual changes, commands, results and unverified behavior. Never invent verification.
 

@@ -1,6 +1,6 @@
 # Checks and CI
 
-Run the commands for each platform your change affects. Changes to common code require Android, desktop and iOS verification. iOS compilation and rendering need macOS.
+CI runs the commands below for each platform your change affects; do not run them on the local machine. Changes to common code require Android, desktop and iOS verification. iOS compilation and rendering need macOS runners.
 
 ## Platform checks
 
@@ -16,6 +16,8 @@ Run the commands for each platform your change affects. Changes to common code r
 ```
 
 Run debug verification separately from release packaging. Shared `BuildConfig.DEBUG` depends on requested task names, so adding a release task disables logging that some backend tests expect.
+
+To install a build on a device without a local build, dispatch the **Build Android** workflow (Actions → Build Android → Run workflow) with variant `debug` and install the uploaded artifact with `adb install -r Muse-debug.apk`.
 
 `:desktopApp:build` includes desktop ktlint and backend tests, but not shared tests. `:shared:desktopTest` also runs `:shared:testServerWithoutReflection`; that task owns three embedded-server suites and removes them from the general test filter to avoid duplicate runs. To select one of those suites, use `:shared:testServerWithoutReflection --tests <suite>`.
 
@@ -239,7 +241,7 @@ For channel switching, use an account with personal and brand channels and a non
 
 ## Repository scripts
 
-Run the relevant tests when changing scripts, translations, hooks or packaging:
+CI runs these tests when changing scripts, translations, hooks or packaging. Run one locally only to debug a specific failure:
 
 ```bash
 node --test .github/scripts/*.test.cjs
@@ -304,7 +306,7 @@ Desktop packaging jobs run `scripts/desktop_smoke.py` against the final AppImage
 
 The smoke test uses temporary XDG directories on every platform and a temporary JVM home for legacy preferences. It pre-seeds completed onboarding, disables Sentry and enables detailed logging. Linux runs under Xvfb with Mesa and Skiko software rendering because the virtual display has no GPU. After 45 seconds it captures the desktop, requests shutdown and allows ten seconds for the app's two-second watchdog and JVM exit. Early exit, HotSpot reports, fatal or uncaught exception log records, native linkage errors, missing logs, screenshot failures and shutdown failures fail the step. Ordinary network errors do not. The Windows packaging runner has no interactive desktop session, so on Windows the script probes a screen capture first and reports the launch as skipped with a warning when it fails; check Windows launches manually.
 
-Each attempted launch uploads a `desktop-smoke-<platform>-<arch>` artifact, with the caller's optional prefix, even after failure. It contains `desktop.png`, `app.log` and any rotated logs or HotSpot reports, `stdout.log` with both output streams, and `result.txt`. The step also prints the result, failing log tails and a 960 px JPEG of the screenshot to the job log, since uploads fail while the artifact quota is full. Decode it with `sed -n '/BEGIN SCREENSHOT/,/END SCREENSHOT/p' job.log | sed '1d;$d' | base64 -d > shot.jpg`. Review screenshots for blank or broken windows before release. The smoke test does not exercise playback or prove that every lazily loaded native library works. Run `python3 scripts/test_desktop_smoke.py` for the local script checks, then dispatch `build-desktop.yml` to verify the real packages on their runners.
+Each attempted launch uploads a `desktop-smoke-<platform>-<arch>` artifact, with the caller's optional prefix, even after failure. It contains `desktop.png`, `app.log` and any rotated logs or HotSpot reports, `stdout.log` with both output streams, and `result.txt`. The step also prints the result, failing log tails and a 960 px JPEG of the screenshot to the job log, since uploads fail while the artifact quota is full. Decode it with `sed -n '/BEGIN SCREENSHOT/,/END SCREENSHOT/p' job.log | sed '1d;$d' | base64 -d > shot.jpg`. Review screenshots for blank or broken windows before release. The smoke test does not exercise playback or prove that every lazily loaded native library works. Run `python3 scripts/test_desktop_smoke.py` only to debug that script locally; CI runs it otherwise. Dispatch `build-desktop.yml` to verify the real packages on their runners.
 
 ## CI path selection
 
@@ -326,7 +328,7 @@ The table counts jobs that acquire a runner, including selection jobs and Nightl
 | Desktop source-only main push | 13 | 7 |
 | Sample desktop PR, `8964d2a` | 7 | 2 |
 
-A PR touching global build inputs now runs four jobs. Run `python3 -m unittest discover -s .github/tests` and `actionlint` after workflow edits. Verification uses Ubuntu 26.04; AppImage packaging keeps Ubuntu 24.04 for its older glibc baseline.
+A PR touching global build inputs now runs four jobs. CI runs `python3 -m unittest discover -s .github/tests` and `actionlint` after workflow edits. Verification uses Ubuntu 26.04; AppImage packaging keeps Ubuntu 24.04 for its older glibc baseline.
 
 ## CI cache rules
 
