@@ -57,7 +57,6 @@ import io.github.museakheeyyy.muse.shared.model.isLive
 import io.github.museakheeyyy.muse.shared.playback.PendingSeekPosition
 import io.github.museakheeyyy.muse.shared.settings.MiniPlayerType
 import io.github.museakheeyyy.muse.shared.settings.Settings
-import io.github.museakheeyyy.muse.shared.settings.SliderStyle
 import io.github.museakheeyyy.muse.shared.settings.displayName
 import io.github.museakheeyyy.muse.shared.ui.components.LiveBadge
 import io.github.museakheeyyy.muse.shared.ui.components.PlayerPrimaryControls
@@ -247,7 +246,7 @@ private fun DesktopMiniPlayerProgress(
             bufferedFraction = if (isLive) 1f else buffered,
             modifier =
                 Modifier.weight(1f).then(
-                    if (Settings.shared.sliderStyle == SliderStyle.DEFAULT) Modifier else Modifier.height(40.dp),
+                    if (Settings.shared.sliderStyle.isStock) Modifier else Modifier.height(40.dp),
                 ),
         )
         if (isLive) {

@@ -49,12 +49,21 @@ import io.github.museakheeyyy.muse.shared.constants.BlockAiSlopArtistsKey
 import io.github.museakheeyyy.muse.shared.constants.BlockedArtistsUndoHintShownKey
 import io.github.museakheeyyy.muse.shared.constants.BlockedSongsUndoHintShownKey
 import io.github.museakheeyyy.muse.shared.constants.BlockedUsersUndoHintShownKey
+import io.github.museakheeyyy.muse.shared.constants.CacheWholeSongWhilePlayingKey
 import io.github.museakheeyyy.muse.shared.constants.CachedCollectionSortDirectionKey
 import io.github.museakheeyyy.muse.shared.constants.CachedCollectionSortKey
 import io.github.museakheeyyy.muse.shared.constants.CachedSongsCustomOrderKey
 import io.github.museakheeyyy.muse.shared.constants.CanvasCacheSizeKey
 import io.github.museakheeyyy.muse.shared.constants.CanvasContentOrderKey
 import io.github.museakheeyyy.muse.shared.constants.CanvasEnabledSourcesKey
+import io.github.museakheeyyy.muse.shared.constants.CarLightsAutoConnectKey
+import io.github.museakheeyyy.muse.shared.constants.CarLightsCentralRoleKey
+import io.github.museakheeyyy.muse.shared.constants.CarLightsDeviceAddressKey
+import io.github.museakheeyyy.muse.shared.constants.CarLightsDeviceNameKey
+import io.github.museakheeyyy.muse.shared.constants.CarLightsDoorsRoleKey
+import io.github.museakheeyyy.muse.shared.constants.CarLightsEnabledKey
+import io.github.museakheeyyy.muse.shared.constants.CarLightsRearRoleKey
+import io.github.museakheeyyy.muse.shared.constants.CarLightsVividKey
 import io.github.museakheeyyy.muse.shared.constants.CastEnabledKey
 import io.github.museakheeyyy.muse.shared.constants.CastVolumeStepKey
 import io.github.museakheeyyy.muse.shared.constants.ClassicRecommendationsKey
@@ -467,6 +476,14 @@ class Settings(
         AndroidAutoPinnedPlaylistPlaybackModeKey,
         AutomotivePinnedPlaylistPlaybackMode.IN_ORDER,
     )
+    var carLightsEnabled by preference(CarLightsEnabledKey, false)
+    var carLightsAutoConnect by preference(CarLightsAutoConnectKey, true)
+    var carLightsDeviceAddress by preference(CarLightsDeviceAddressKey, "")
+    var carLightsDeviceName by preference(CarLightsDeviceNameKey, "")
+    var carLightsCentralRole by preference(CarLightsCentralRoleKey, CarLightRole.PRIMARY)
+    var carLightsDoorsRole by preference(CarLightsDoorsRoleKey, CarLightRole.SECONDARY)
+    var carLightsRearRole by preference(CarLightsRearRoleKey, CarLightRole.TERTIARY)
+    var carLightsVivid by preference(CarLightsVividKey, true)
     var crossfadeEnabled by preference(false)
     var crossfadeDuration by preference(10f)
     var crossfadeGapless by preference(true)
@@ -608,6 +625,7 @@ class Settings(
 
     var songCacheEnabled by preference(false)
     var maxSongCacheSize by preference(1024)
+    var cacheWholeSongWhilePlaying by preference(CacheWholeSongWhilePlayingKey, false)
     var maxImageCacheSize by preference(512)
     var audioCacheLocation by preference("INTERNAL")
     var downloadLocation by preference("INTERNAL")
@@ -1398,6 +1416,8 @@ class Settings(
                     "aiSlopBlocklistUpdatedAt",
                     SpeedDialArtworkRefreshTimesKey,
                     "customDownloadPath",
+                    CarLightsDeviceAddressKey,
+                    CarLightsDeviceNameKey,
                     "knownUploadIdsJson",
                     "hasNewUploads",
                     "desktopOnboardingComplete",
