@@ -11,7 +11,12 @@ import unittest
 
 from test_release_workflows import ROOT, step_script
 
-WORKFLOW = ROOT / '.github/workflows/nightly.yml'
+WORKFLOW = next(
+    path for path in (
+        ROOT / '.github/workflows/nightly.yml',
+        ROOT / '.github/workflows/nightly.yml.disabled',
+    ) if path.exists()
+)
 
 
 class NightlyWorkflowTest(unittest.TestCase):

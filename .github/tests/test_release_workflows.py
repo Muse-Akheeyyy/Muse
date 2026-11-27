@@ -12,8 +12,16 @@ import unittest
 ROOT = Path(__file__).resolve().parents[2]
 
 
+def workflow_text(workflow):
+    path = ROOT / '.github/workflows' / workflow
+    # A renamed-inactive workflow keeps its tests runnable while it is disabled.
+    if not path.exists():
+        path = path.with_name(path.name + '.disabled')
+    return path.read_text()
+
+
 def step_script(workflow, step):
-    text = (ROOT / '.github/workflows' / workflow).read_text()
+    text = workflow_text(workflow)
     body = text.split(f'- name: {step}\n', 1)[1].split('        run: |\n', 1)[1]
     lines = []
     for line in body.splitlines():
